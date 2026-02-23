@@ -113,6 +113,31 @@
     </div>
   </div>
 
+  <div class="history-section">
+    <div class="history-header">
+      <h2>📜 나의 측정 기록</h2>
+      <button class="clear-btn" onclick="clearHistory()">기록 초기화</button>
+    </div>
+    <div class="table-wrap">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>날짜</th>
+            <th>IP</th>
+            <th>다운로드</th>
+            <th>업로드</th>
+            <th>핑</th>
+            <th>등급</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          <!-- JS will populate this -->
+          <tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">아직 기록이 없습니다.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="modalOverlay">
     <canvas id="effectCanvas"></canvas>
     <div class="result-box" id="resultBox">

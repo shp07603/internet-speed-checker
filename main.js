@@ -1,6 +1,60 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const $ = id => document.getElementById(id);
 
+// ── History & IP ──
+let currentIP = 'Unknown';
+async function getIP() {
+  try {
+    const res = await fetch('https://api.ipify.org?format=json');
+    const data = await res.json();
+    currentIP = data.ip;
+  } catch(e) { currentIP = 'Unknown'; }
+}
+
+function loadHistory() {
+  const data = JSON.parse(localStorage.getItem('netScoreHistory') || '[]');
+  const tbody = $('historyBody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">아직 기록이 없습니다.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(item => `
+    <tr>
+      <td>${item.date}</td>
+      <td>${item.ip}</td>
+      <td>${item.dl} Mbps</td>
+      <td>${item.ul} Mbps</td>
+      <td>${item.ping} ms</td>
+      <td><span class="badge-grade ${item.grade}">${item.grade}</span></td>
+    </tr>
+  `).join('');
+}
+
+function saveHistory(dl, ul, ping, grade) {
+  const data = JSON.parse(localStorage.getItem('netScoreHistory') || '[]');
+  const now = new Date();
+  const dateStr = now.getFullYear() + '.' + (now.getMonth()+1).toString().padStart(2,'0') + '.' + now.getDate().toString().padStart(2,'0') + ' ' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  
+  data.unshift({
+    date: dateStr,
+    ip: currentIP,
+    dl: dl ? dl.toFixed(1) : '-',
+    ul: ul ? ul.toFixed(1) : '-',
+    ping: ping ? ping : '-',
+    grade: grade
+  });
+  if (data.length > 50) data.pop(); // Max 50 items
+  localStorage.setItem('netScoreHistory', JSON.stringify(data));
+  loadHistory();
+}
+
+function clearHistory() {
+  if(confirm('모든 측정 기록을 삭제하시겠습니까?')) {
+    localStorage.removeItem('netScoreHistory');
+    loadHistory();
+  }
+}
+
 // ── UI ──
 function setStatus(msg, state) {
   $('statusText').textContent = msg;
@@ -380,6 +434,9 @@ async function startTest() {
   
   // Show popup with effect
   showModal(g);
+  
+  // Save history
+  saveHistory(dl, ul, ping, g);
 
   if (dl) setGauge(dl.toFixed(1), 200, '다운로드 최종',
     g==='A'?'var(--accent3)':g==='B'?'var(--accent)':'var(--warn)');
@@ -394,3 +451,7 @@ async function startTest() {
   $('startBtn').disabled = false;
   $('startBtn').textContent = '↺ 다시 테스트';
 }
+
+// Init
+getIP();
+loadHistory();
