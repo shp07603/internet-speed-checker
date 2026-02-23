@@ -25,6 +25,106 @@ function setGauge(val, max, label, color) {
   $('gaugeLabel').textContent = label;
 }
 
+// ── Effects ──
+let animFrame;
+function stopEffect() {
+  if (animFrame) cancelAnimationFrame(animFrame);
+  const cvs = $('effectCanvas');
+  const ctx = cvs.getContext('2d');
+  ctx.clearRect(0,0,cvs.width,cvs.height);
+}
+function playConfetti() {
+  stopEffect();
+  const cvs = $('effectCanvas');
+  const ctx = cvs.getContext('2d');
+  cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+  
+  const particles = [];
+  const colors = ['#00d4ff','#ff6b35','#39ff14','#ffcc00','#ffffff'];
+  
+  for(let i=0; i<150; i++) {
+    particles.push({
+      x: cvs.width/2, y: cvs.height/2,
+      vx: (Math.random()-0.5)*20, vy: (Math.random()-0.5)*20 - 5,
+      c: colors[Math.floor(Math.random()*colors.length)],
+      s: Math.random()*8+4,
+      r: Math.random()*360,
+      dr: (Math.random()-0.5)*10
+    });
+  }
+
+  function loop() {
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.3; // gravity
+      p.r += p.dr;
+      
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.r * Math.PI/180);
+      ctx.fillStyle = p.c;
+      ctx.fillRect(-p.s/2, -p.s/2, p.s, p.s);
+      ctx.restore();
+    });
+    // Remove off-screen
+    // simple infinite loop for fun: if below screen, reset to top random
+    particles.forEach(p => {
+      if(p.y > cvs.height) {
+        p.y = -20; p.x = Math.random()*cvs.width; p.vy = Math.random()*5+2;
+      }
+    });
+    animFrame = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+function playRain() {
+  stopEffect();
+  const cvs = $('effectCanvas');
+  const ctx = cvs.getContext('2d');
+  cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+
+  const drops = [];
+  for(let i=0; i<100; i++) {
+    drops.push({
+      x: Math.random()*cvs.width,
+      y: Math.random()*cvs.height,
+      l: Math.random()*20+10,
+      v: Math.random()*10+15
+    });
+  }
+
+  function loop() {
+    ctx.fillStyle = 'rgba(0,0,0,0.1)'; // trail effect
+    ctx.fillRect(0,0,cvs.width,cvs.height);
+    
+    ctx.strokeStyle = 'rgba(100,120,150,0.5)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    drops.forEach(d => {
+      ctx.moveTo(d.x, d.y);
+      ctx.lineTo(d.x, d.y+d.l);
+      d.y += d.v;
+      if(d.y > cvs.height) { d.y = -d.l; d.x = Math.random()*cvs.width; }
+    });
+    ctx.stroke();
+    animFrame = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+function showModal(grade) {
+  $('modalOverlay').className = 'modal-overlay show';
+  if (grade === 'A' || grade === 'B') playConfetti();
+  else if (grade === 'D' || grade === 'F') playRain();
+  else stopEffect(); // C gets nothing special or maybe just static
+}
+
+function closeModal() {
+  $('modalOverlay').className = 'modal-overlay';
+  stopEffect();
+}
+
 // ── Ping chart ──
 const history = [];
 function addBar(ms, lost) {
@@ -226,7 +326,9 @@ async function startTest() {
   if (running) return;
   running = true;
   $('startBtn').disabled = true;
-  $('resultBox').className = 'result-box';
+  // $('resultBox').className = 'result-box'; // Old inline logic
+  closeModal(); // Hide modal if open
+  
   $('errorNote').className = 'error-note';
   history.length = 0; $('pingChart').innerHTML = '';
   ['dl','ul','ping','jitter','loss','stability'].forEach(id=>setCard(id,'—',null,''));
@@ -275,7 +377,9 @@ async function startTest() {
   $('resultGrade').className = 'result-grade ' + g;
   $('resultDesc').textContent = DESC[g];
   $('resultTips').innerHTML = '<ul>' + tips(dl,ul,ping||999,jitter,loss).map(t=>`<li>${t}</li>`).join('') + '</ul>';
-  $('resultBox').className = 'result-box show';
+  
+  // Show popup with effect
+  showModal(g);
 
   if (dl) setGauge(dl.toFixed(1), 200, '다운로드 최종',
     g==='A'?'var(--accent3)':g==='B'?'var(--accent)':'var(--warn)');
