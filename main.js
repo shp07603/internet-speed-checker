@@ -147,16 +147,22 @@ async function runUpload() {
   setCard('ul', '측정 중', null, 'active');
   const speeds = [];
   const SZ = 2e6;
-  const body = new Uint8Array(SZ);
-  for (let j=0;j<8192;j++) body[j] = (Math.random()*256)|0;
+  // Use a string for body to be safer with simple requests in no-cors, though not strictly required
+  const body = 'a'.repeat(SZ); 
+  
   for (let i=0;i<3;i++) {
     try {
       const ac = new AbortController();
       setTimeout(()=>ac.abort(),20000);
       const t0 = performance.now();
+      // mode: 'no-cors' allows sending data without reading response (opaque)
+      // Removing Content-Type header to avoid preflight if possible (or let browser handle it)
       await fetch('https://speed.cloudflare.com/__up?t='+Date.now(), {
-        method:'POST', body: body.slice(), cache:'no-store', signal:ac.signal,
-        headers:{'Content-Type':'application/octet-stream'}
+        method:'POST', 
+        body: body, 
+        mode: 'no-cors',
+        cache:'no-store', 
+        signal:ac.signal
       });
       const mbps = SZ*8/((performance.now()-t0)/1000)/1e6;
       if (mbps>0&&mbps<10000) {
