@@ -216,7 +216,7 @@ h1 span { color:var(--accent); text-shadow:var(--glow); }
 .result-box.show { display:block; }
 .result-grade {
   font-family:'Space Mono',monospace;
-  font-size:88px; font-weight:700; line-height:1; margin-bottom:14px;
+  font-size:clamp(40px, 8vw, 60px); font-weight:700; line-height:1.2; margin-bottom:14px;
 }
 .result-grade.A { color:var(--accent3); text-shadow:0 0 30px rgba(57,255,20,.5); }
 .result-grade.B { color:var(--accent); text-shadow:var(--glow); }

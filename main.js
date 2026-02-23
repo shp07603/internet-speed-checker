@@ -195,21 +195,28 @@ function grade(dl, ping, stab) {
   p += stab*0.3;
   return p>=85?'A':p>=70?'B':p>=50?'C':p>=30?'D':'F';
 }
+const TITLES = {
+  A: '🚀 우주급 속도',
+  B: '⚡ 한국인 평균',
+  C: '🚲 따릉이 모드',
+  D: '🐌 민달팽이',
+  F: '🗿 빗살무늬 토기',
+};
 const DESC = {
-  A:'매우 우수한 네트워크입니다. 4K 스트리밍, 온라인 게임, 화상회의 모두 완벽합니다.',
-  B:'양호한 네트워크입니다. HD 스트리밍과 일반 인터넷 사용에 충분합니다.',
-  C:'보통 수준의 네트워크입니다. 고부하 작업에서 간헐적 지연이 발생할 수 있습니다.',
-  D:'네트워크 품질이 낮습니다. 스트리밍이나 게임에서 불편함이 예상됩니다.',
-  F:'네트워크 상태가 매우 좋지 않습니다. 기본 인터넷 사용도 어려울 수 있습니다.',
+  A:'이더넷 케이블이 금으로 되어있나요? 판교 서버실급 속도입니다.',
+  B:'아주 쾌적합니다. 게임하다 렉 걸리면 100% 본인 실력 탓입니다.',
+  C:'유튜브 1080p는 돌아가지만, 4K는 기도하면서 봐야 합니다.',
+  D:'답답하시죠? 인내심을 기르거나 통신사에 전화해서 따지세요.',
+  F:'혹시 신호를 연기로 보내고 계신가요? 비둘기가 더 빠를 것 같습니다.',
 };
 function tips(dl, ul, ping, jitter, loss) {
   const t = [];
-  if (loss>5) t.push('💨 데이터가 많이 씹히고 있어요. 공유기를 재시작하거나 LAN 케이블 연결을 시도해보세요.');
-  if (jitter>30) t.push('〰️ 연결이 많이 떨립니다. 공유기 채널을 덜 혼잡한 채널로 변경해보세요.');
-  if (ping>100) t.push('⚡ 반응속도가 느립니다. 공유기 거리를 줄이거나 5GHz 대역을 사용해보세요.');
-  if (dl&&dl<10) t.push('⬇️ 다운 속도가 낮습니다. 다른 기기의 인터넷 사용을 확인하세요.');
-  if (ul&&dl&&ul<dl*0.08) t.push('⬆️ 파일 보내는 속도가 매우 낮습니다. ISP 플랜 설정을 확인해보세요.');
-  if (!t.length) t.push('✅ 인터넷 상태가 전반적으로 좋습니다. 현재 설정을 유지하세요!');
+  if (loss>5) t.push('💨 데이터가 줄줄 새고 있어요. 랜선을 꽉 묶어보세요 (농담입니다).');
+  if (jitter>30) t.push('〰️ 연결이 술 취한 것처럼 흔들립니다. 공유기 좀 쉬게 해주세요.');
+  if (ping>100) t.push('⚡ 반응속도가 거북이입니다. 해외 서버 게임은 포기하세요.');
+  if (dl&&dl<10) t.push('⬇️ 속도가 처참합니다. 혹시 옆집에서 와이파이 훔쳐 쓰나요?');
+  if (ul&&dl&&ul<dl*0.08) t.push('⬆️ 업로드 속도가 왜 이래? 방송 켜면 바로 튕깁니다.');
+  if (!t.length) t.push('✅ 완벽합니다! 이 컴퓨터로 뭘 하든 당신의 자유입니다.');
   return t;
 }
 
@@ -264,7 +271,7 @@ async function startTest() {
 
   // 5. Result
   const g = grade(dl, ping||999, stab);
-  $('resultGrade').textContent = g;
+  $('resultGrade').textContent = TITLES[g];
   $('resultGrade').className = 'result-grade ' + g;
   $('resultDesc').textContent = DESC[g];
   $('resultTips').innerHTML = '<ul>' + tips(dl,ul,ping||999,jitter,loss).map(t=>`<li>${t}</li>`).join('') + '</ul>';
