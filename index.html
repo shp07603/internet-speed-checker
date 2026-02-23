@@ -1,14 +1,116 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Network Score — 내 인터넷 점수는?</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+<div class="wrapper">
+
+  <header>
+    <div class="logo">// 내 인터넷 점수는 몇 점일까?</div>
+    <h1>My Network<span> Score</span></h1>
+    <p class="subtitle">다운 속도 · 업로드 속도 · 반응속도 · 연결 떨림 · 데이터 씹힘 종합 분석</p>
+  </header>
+
+  <div class="gauge-section">
+    <div class="gauge-wrap">
+      <svg class="gauge-svg" viewBox="0 0 200 200">
+        <circle class="gauge-bg" cx="100" cy="100" r="90" stroke-dasharray="565" stroke-dashoffset="141"/>
+        <circle class="gauge-fill" id="gaugeFill" cx="100" cy="100" r="90" stroke-dasharray="565" stroke-dashoffset="565"/>
+      </svg>
+      <div class="gauge-center">
+        <div class="gauge-value" id="gaugeVal">—</div>
+        <div class="gauge-unit">MBPS</div>
+        <div class="gauge-label" id="gaugeLabel">대기 중</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="start-btn" id="startBtn" onclick="startTest()">▶ 테스트 시작</button>
+
+  <div class="error-note" id="errorNote">
+    ⚠️ <strong>일부 항목을 측정하지 못했습니다.</strong><br>
+    브라우저 보안 정책(CORS)으로 외부 서버 접근이 차단될 수 있습니다.
+    파일을 로컬에서 열지 말고 <strong>웹 서버에 올리거나 Chrome으로 실행</strong>하면 더 정확합니다.
+    핑·패킷손실 측정은 대부분 환경에서 정상 동작합니다.
+  </div>
+
+  <div class="status-bar">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">▶ 위 버튼을 눌러 테스트를 시작하세요</span>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-header">
+      <span id="progressLabel">준비 중...</span>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card" id="card-dl">
+      <span class="card-icon">⬇️</span>
+      <div class="card-label">다운 속도</div>
+      <div class="card-value" id="val-dl">—</div>
+      <div class="card-sub" id="sub-dl">Mbps · 파일 받는 속도</div>
+    </div>
+    <div class="card" id="card-ul">
+      <span class="card-icon">⬆️</span>
+      <div class="card-label">업로드 속도</div>
+      <div class="card-value" id="val-ul">—</div>
+      <div class="card-sub" id="sub-ul">Mbps · 파일 보내는 속도</div>
+    </div>
+    <div class="card" id="card-ping">
+      <span class="card-icon">⚡</span>
+      <div class="card-label">반응속도</div>
+      <div class="card-value" id="val-ping">—</div>
+      <div class="card-sub" id="sub-ping">ms · 낮을수록 빠릿함</div>
+    </div>
+    <div class="card" id="card-jitter">
+      <span class="card-icon">〰️</span>
+      <div class="card-label">연결 떨림</div>
+      <div class="card-value" id="val-jitter">—</div>
+      <div class="card-sub" id="sub-jitter">ms · 낮을수록 안정적</div>
+    </div>
+    <div class="card" id="card-loss">
+      <span class="card-icon">💨</span>
+      <div class="card-label">데이터 씹힘</div>
+      <div class="card-value" id="val-loss">—</div>
+      <div class="card-sub" id="sub-loss">% · 낮을수록 좋음</div>
+    </div>
+    <div class="card" id="card-stability">
+      <span class="card-icon">🔒</span>
+      <div class="card-label">연결 품질</div>
+      <div class="card-value" id="val-stability">—</div>
+      <div class="card-sub" id="sub-stability">/ 100점</div>
+    </div>
+  </div>
+
+  <div class="chart-section">
+    <div class="chart-title">실시간 반응속도 히스토리 (최근 30회)</div>
+    <div class="ping-chart" id="pingChart"></div>
+    <div class="chart-legend">
+      <span><span class="ld" style="background:var(--accent)"></span>빠릿함 ≤80ms</span>
+      <span><span class="ld" style="background:var(--warn)"></span>약간 느림 ≤200ms</span>
+      <span><span class="ld" style="background:var(--danger)"></span>느림 &gt;200ms</span>
+      <span><span class="ld" style="background:rgba(255,68,68,.4); border:1px dashed #f44"></span>씹힘 발생</span>
+    </div>
+  </div>
+
+  <div class="result-box" id="resultBox">
+    <div class="result-grade" id="resultGrade"></div>
+    <div class="result-desc" id="resultDesc"></div>
+    <div class="result-tips" id="resultTips"></div>
+  </div>
+
+</div>
+<script src="main.js"></script>
 </body>
 </html>
