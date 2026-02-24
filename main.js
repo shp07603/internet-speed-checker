@@ -8,19 +8,20 @@ async function getIP() {
     const res = await fetch('https://api.ipify.org?format=json');
     const data = await res.json();
     currentIP = data.ip;
-    $('network-provider').textContent = 'IP: ' + currentIP;
+    $('network-provider').textContent = '접속 IP: ' + currentIP;
     
     const infoRes = await fetch('https://ipapi.co/json/');
     const infoData = await infoRes.json();
     if (infoData.org) $('network-name').textContent = infoData.org;
     if (infoData.city && infoData.country_name) {
-        $('server-location').textContent = infoData.city + ', ' + infoData.country_name;
+        // Update server location text if the element exists
+        const locEl = $('server-location');
+        if (locEl) locEl.textContent = infoData.city + ', ' + infoData.country_name;
     }
   } catch(e) { 
       currentIP = 'Unknown'; 
       $('network-provider').textContent = '네트워크 연결됨';
-      $('network-name').textContent = '인터넷 연결 감지됨';
-      $('server-location').textContent = '서울, 대한민국';
+      $('network-name').textContent = '인터넷 서비스 제공업체 분석 중';
   }
 }
 
@@ -28,15 +29,15 @@ function loadHistory() {
   const data = JSON.parse(localStorage.getItem('netScoreHistory') || '[]');
   const tbody = $('historyBody');
   if (!data.length) {
-    tbody.innerHTML = '<tr><td colspan="5" class="p-24 text-center text-slate-400 font-bold uppercase tracking-widest">No records yet</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="p-24 text-center text-slate-400 font-bold uppercase tracking-widest">데이터가 없습니다</td></tr>';
     return;
   }
   tbody.innerHTML = data.map(item => `
     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-      <td class="p-8 text-slate-500 font-bold">${item.date}</td>
-      <td class="p-8 font-black text-slate-900 dark:text-white">${item.dl} <span class="text-[10px] font-normal text-slate-400 uppercase">Mbps</span></td>
-      <td class="p-8 font-black text-slate-900 dark:text-white">${item.ul} <span class="text-[10px] font-normal text-slate-400 uppercase">Mbps</span></td>
-      <td class="p-8 font-black text-slate-900 dark:text-white">${item.ping} <span class="text-[10px] font-normal text-slate-400 uppercase">ms</span></td>
+      <td class="p-8 text-slate-500 font-bold text-xs">${item.date}</td>
+      <td class="p-8 font-black text-slate-900 dark:text-white text-center">${item.dl} <span class="text-[10px] font-normal text-slate-400 uppercase">Mbps</span></td>
+      <td class="p-8 font-black text-slate-900 dark:text-white text-center">${item.ul} <span class="text-[10px] font-normal text-slate-400 uppercase">Mbps</span></td>
+      <td class="p-8 font-black text-slate-900 dark:text-white text-center">${item.ping} <span class="text-[10px] font-normal text-slate-400 uppercase">ms</span></td>
       <td class="p-8 text-right">
         <span class="px-4 py-2 rounded-full text-[10px] font-black uppercase ${getGradeClass(item.grade)}">${item.grade}</span>
       </td>
@@ -219,7 +220,7 @@ async function onePing(url) {
 
 async function runPing() {
   const N = 15;
-  setStatus('📡 지연 시간 측정 중...', 'running');
+  setStatus('📡 지연 시간 분석 중...', 'running');
   setCard('ping', '...', 'active');
   const ok = []; let lost = 0;
   for (let i = 0; i < N; i++) {
@@ -243,7 +244,7 @@ async function dlCF(bytes) {
 }
 
 async function runDownload() {
-  setStatus('⬇️ 다운로드 측정 중...', 'running');
+  setStatus('⬇️ 다운로드 대역폭 측정 중...', 'running');
   setCard('dl', '...', 'active');
   const speeds = [];
   const sizes = [1e6, 5e6, 10e6];
@@ -259,7 +260,7 @@ async function runDownload() {
 }
 
 async function runUpload() {
-  setStatus('⬆️ 업로드 측정 중...', 'running');
+  setStatus('⬆️ 업로드 데이터 전송 중...', 'running');
   setCard('ul', '...', 'active');
   const speeds = [];
   const SZ = 1e6;
@@ -314,31 +315,37 @@ async function startTest() {
   running = true;
   $('startBtn').disabled = true;
   
-  // Reset
+  // Reset UI Values
   ['dl','ul','ping','jitter','loss','stability'].forEach(id => {
       const el = $('val-' + id);
       if (el) el.textContent = '...';
   });
   $('gaugeFill').style.transform = 'scaleY(0)';
   $('gaugeVal').textContent = 'READY';
-  $('gaugeLabel').textContent = 'PREPARING';
+  $('gaugeLabel').textContent = 'ANALYZING';
   
+  // Measurement Sequence
   const { ping, jitter, loss } = await runPing();
   const dl = await runDownload();
   const ul = await runUpload();
   const stab = stability(ping||999, jitter, loss);
   
+  // Final Data Injection
   $('val-jitter').textContent = jitter;
-  $('val-loss').textContent = loss;
+  $('val-loss').textContent = loss + '%';
   $('val-stability').textContent = stab;
 
   const g = grade(dl, ping||999, stab);
-  $('resultGrade').textContent = g;
-  $('resultGrade').className = 'text-9xl font-black tracking-tighter leading-none ' + (g === 'A' ? 'text-emerald-500' : g === 'B' ? 'text-blue-500' : 'text-yellow-500');
+  const resGradeEl = $('resultGrade');
+  resGradeEl.textContent = g;
+  resGradeEl.className = 'text-[10rem] font-black tracking-tighter leading-none ' + 
+    (g === 'A' ? 'text-emerald-500' : g === 'B' ? 'text-blue-500' : 'text-yellow-500');
+  
   $('resultTitle').textContent = TITLES[g];
   $('resultDesc').textContent = DESC[g];
   $('resultTips').innerHTML = '<ul class="space-y-1">' + tips(dl,ul,ping||999,jitter,loss).map(t=>`<li>${t}</li>`).join('') + '</ul>';
   
+  // Modal & History
   showModal(g);
   saveHistory(dl, ul, ping, g);
   
@@ -350,6 +357,7 @@ async function startTest() {
   $('startBtn').disabled = false;
 }
 
+// Initial Loading
 window.addEventListener('DOMContentLoaded', () => {
     getIP(); 
     loadHistory();
