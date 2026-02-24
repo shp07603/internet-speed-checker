@@ -55,6 +55,22 @@ function clearHistory() {
   }
 }
 
+// ── Newsletter ──
+function subscribeNewsletter() {
+  const email = $('newsletterEmail').value;
+  if (!email || !email.includes('@')) {
+    alert('올바른 이메일 주소를 입력해 주세요.');
+    return;
+  }
+  
+  // UI Update
+  $('newsletterForm').style.display = 'none';
+  $('newsletterStatus').style.display = 'block';
+  
+  // Actually you'd send this to a server, but for now we just pretend.
+  console.log('New subscriber:', email);
+}
+
 // ── UI ──
 function setStatus(msg, state) {
   $('statusText').textContent = msg;

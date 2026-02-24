@@ -287,9 +287,12 @@
       <div class="newsletter">
         <h3>Network Insights 구독</h3>
         <p>최신 네트워크 기술 동향과 인터넷 속도 향상 팁을 메일로 받아보세요.</p>
-        <div class="newsletter-form">
-          <input type="email" placeholder="email@example.com" disabled>
-          <button disabled>구독하기</button>
+        <div class="newsletter-form" id="newsletterForm">
+          <input type="email" id="newsletterEmail" placeholder="email@example.com" required>
+          <button type="button" onclick="subscribeNewsletter()">구독하기</button>
+        </div>
+        <div id="newsletterStatus" style="display:none; margin-top:15px; color:var(--accent3); font-size:14px; font-weight:700;">
+          ✅ 구독해 주셔서 감사합니다! 곧 첫 메일을 보내드릴게요.
         </div>
       </div>
       <div class="footer-links">

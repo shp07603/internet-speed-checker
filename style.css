@@ -361,6 +361,27 @@ footer {
   margin-top: 100px; padding: 60px 0; border-top: 1px solid var(--border);
   text-align: center; color: var(--muted); font-size: 13px;
 }
+.newsletter {
+  max-width: 400px; margin: 0 auto 40px;
+  background: rgba(0,212,255,0.03); border: 1px solid var(--border);
+  padding: 30px; border-radius: 12px;
+}
+.newsletter h3 { color: #fff; margin-bottom: 10px; font-size: 18px; }
+.newsletter p { font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
+.newsletter-form { display: flex; gap: 8px; }
+.newsletter-form input {
+  flex: 1; background: var(--bg); border: 1px solid var(--border);
+  padding: 10px 16px; color: #fff; border-radius: 4px; font-size: 14px;
+  outline: none;
+}
+.newsletter-form input:focus { border-color: var(--accent); }
+.newsletter-form button {
+  background: var(--accent); border: none; color: #000;
+  padding: 0 20px; border-radius: 4px; font-weight: 700;
+  cursor: pointer; transition: opacity .3s; white-space: nowrap;
+}
+.newsletter-form button:hover { opacity: 0.9; }
+
 .footer-links { margin-bottom: 24px; }
 .footer-links a {
   color: var(--text); text-decoration: none; margin: 0 15px;
