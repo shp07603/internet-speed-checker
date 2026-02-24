@@ -81,6 +81,10 @@ function clearHistory() {
 }
 
 // ── UI ──
+function toggleMenu() {
+    document.body.classList.toggle('menu-open');
+}
+
 function setStatus(msg, state) {
   $('statusText').textContent = msg;
   const dot = $('statusDot');
@@ -99,13 +103,10 @@ function setStatus(msg, state) {
 
 function setProgress(label, pct) {
   $('progressWrap').classList.remove('hidden');
-  $('progressLabel').classList.remove('hidden');
-  $('progressLabel').textContent = label;
   $('progressFill').style.width = Math.min(pct, 100) + '%';
   if (pct >= 100) {
       setTimeout(() => {
           $('progressWrap').classList.add('hidden');
-          $('progressLabel').classList.add('hidden');
       }, 1000);
   }
 }
@@ -130,9 +131,9 @@ function setCard(id, val, sub, state) {
 }
 
 function setGauge(val, max, label, colorClass) {
-  const pct = Math.min((val / max) * 100, 100);
+  const pct = Math.min((val / max) * 1.2, 1); // Allow slight overflow for visual effect
   const fill = $('gaugeFill');
-  fill.style.height = pct + '%';
+  fill.style.transform = `scaleY(${pct})`;
   
   $('gaugeVal').textContent = (typeof val === 'number' && val % 1) ? val.toFixed(1) : val;
   $('gaugeLabel').textContent = label;
