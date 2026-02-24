@@ -28,17 +28,17 @@ function loadHistory() {
   const data = JSON.parse(localStorage.getItem('netScoreHistory') || '[]');
   const tbody = $('historyBody');
   if (!data.length) {
-    tbody.innerHTML = '<tr><td colspan="5" class="p-20 text-center text-slate-400">아직 기록이 없습니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="p-24 text-center text-slate-400 font-bold uppercase tracking-widest">No records yet</td></tr>';
     return;
   }
   tbody.innerHTML = data.map(item => `
     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-      <td class="p-6 text-slate-500 font-medium">${item.date}</td>
-      <td class="p-6 font-bold text-slate-900 dark:text-white">${item.dl} <span class="text-[10px] font-normal text-slate-400 uppercase">Mbps</span></td>
-      <td class="p-6 font-bold text-slate-900 dark:text-white">${item.ul} <span class="text-[10px] font-normal text-slate-400 uppercase">Mbps</span></td>
-      <td class="p-6 font-bold text-slate-900 dark:text-white">${item.ping} <span class="text-[10px] font-normal text-slate-400 uppercase">ms</span></td>
-      <td class="p-6 text-right">
-        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${getGradeClass(item.grade)}">${item.grade}</span>
+      <td class="p-8 text-slate-500 font-bold">${item.date}</td>
+      <td class="p-8 font-black text-slate-900 dark:text-white">${item.dl} <span class="text-[10px] font-normal text-slate-400 uppercase">Mbps</span></td>
+      <td class="p-8 font-black text-slate-900 dark:text-white">${item.ul} <span class="text-[10px] font-normal text-slate-400 uppercase">Mbps</span></td>
+      <td class="p-8 font-black text-slate-900 dark:text-white">${item.ping} <span class="text-[10px] font-normal text-slate-400 uppercase">ms</span></td>
+      <td class="p-8 text-right">
+        <span class="px-4 py-2 rounded-full text-[10px] font-black uppercase ${getGradeClass(item.grade)}">${item.grade}</span>
       </td>
     </tr>
   `).join('');
@@ -83,7 +83,7 @@ function clearHistory() {
 function setStatus(msg, state) {
   $('statusText').textContent = msg;
   const dot = $('statusDot');
-  dot.className = 'w-2 h-2 rounded-full transition-all duration-300 ';
+  dot.className = 'w-3 h-3 rounded-full transition-all duration-300 ';
   
   if (state === 'running') {
       dot.classList.add('bg-primary', 'animate-pulse');
@@ -107,20 +107,16 @@ function setProgress(label, pct) {
   }
 }
 
-function setCard(id, val, sub, state) {
+function setCard(id, val, state) {
   const card = $('card-' + id);
   const valEl = $('val-' + id);
   if (!card || !valEl) return;
   
   valEl.textContent = val;
-  card.classList.remove('border-primary', 'bg-primary/5', 'border-emerald-500/30', 'bg-emerald-500/5', 'border-red-500/30', 'bg-red-500/5');
+  card.classList.remove('border-primary', 'bg-primary/5', 'scale-105', 'shadow-lg');
   
   if (state === 'active') {
-      card.classList.add('border-primary', 'bg-primary/5');
-  } else if (state === 'done') {
-      card.classList.add('border-emerald-500/30', 'bg-emerald-500/5');
-  } else if (state === 'bad') {
-      card.classList.add('border-red-500/30', 'bg-red-500/5');
+      card.classList.add('border-primary', 'bg-primary/5', 'scale-105', 'shadow-lg');
   }
 }
 
@@ -224,15 +220,16 @@ async function onePing(url) {
 async function runPing() {
   const N = 15;
   setStatus('📡 지연 시간 측정 중...', 'running');
-  setCard('ping', '...', null, 'active');
+  setCard('ping', '...', 'active');
   const ok = []; let lost = 0;
   for (let i = 0; i < N; i++) {
     const ms = await onePing(TARGETS[i % TARGETS.length]);
     if (!ms || ms > 3000) { lost++; }
-    else { ok.push(ms); setCard('ping', Math.round(ok.reduce((a,b)=>a+b,0)/ok.length), 'ms', 'active'); }
+    else { ok.push(ms); setCard('ping', Math.round(ok.reduce((a,b)=>a+b,0)/ok.length), 'active'); }
     setProgress('PING', (i+1)/N*30);
     await sleep(100);
   }
+  setCard('ping', ok.length ? Math.round(ok.reduce((a,b)=>a+b,0)/ok.length) : '실패', '');
   return { ping: ok.length ? Math.round(ok.reduce((a,b)=>a+b,0)/ok.length) : null, jitter: ok.length > 1 ? Math.round(ok.slice(1).reduce((s,v,i)=>s+Math.abs(v-ok[i]),0)/(ok.length-1)) : 0, loss: Math.round(lost/N*100) };
 }
 
@@ -247,22 +244,23 @@ async function dlCF(bytes) {
 
 async function runDownload() {
   setStatus('⬇️ 다운로드 측정 중...', 'running');
-  setCard('dl', '...', null, 'active');
+  setCard('dl', '...', 'active');
   const speeds = [];
   const sizes = [1e6, 5e6, 10e6];
   for (let i = 0; i < sizes.length; i++) {
     try {
       const mbps = await dlCF(sizes[i]);
-      if (mbps > 0 && mbps < 10000) { speeds.push(mbps); setGauge(mbps, 200, 'MBPS'); setCard('dl', mbps.toFixed(1), 'Mbps', 'active'); }
+      if (mbps > 0 && mbps < 10000) { speeds.push(mbps); setGauge(mbps, 200, 'MBPS'); setCard('dl', mbps.toFixed(1), 'active'); }
     } catch(e) {}
     setProgress('DOWNLOAD', 30+(i+1)/3*35);
   }
+  setCard('dl', speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(1) : '실패', '');
   return speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(2) : null;
 }
 
 async function runUpload() {
   setStatus('⬆️ 업로드 측정 중...', 'running');
-  setCard('ul', '...', null, 'active');
+  setCard('ul', '...', 'active');
   const speeds = [];
   const SZ = 1e6;
   const body = 'a'.repeat(SZ); 
@@ -273,11 +271,12 @@ async function runUpload() {
       const t0 = performance.now();
       await fetch('https://speed.cloudflare.com/__up?t='+Date.now(), { method:'POST', body: body, mode: 'no-cors', cache:'no-store', signal:ac.signal });
       const mbps = SZ*8/((performance.now()-t0)/1000)/1e6;
-      if (mbps>0&&mbps<10000) { speeds.push(mbps); setGauge(mbps, 100, 'MBPS'); setCard('ul',mbps.toFixed(1), 'Mbps', 'active'); }
+      if (mbps>0&&mbps<10000) { speeds.push(mbps); setGauge(mbps, 100, 'MBPS'); setCard('ul',mbps.toFixed(1), 'active'); }
     } catch(e) {}
     setProgress('UPLOAD', 65+(i+1)/3*35);
     await sleep(200);
   }
+  setCard('ul', speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(1) : '실패', '');
   return speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(2) : null;
 }
 
@@ -309,41 +308,49 @@ function tips(dl, ul, ping, jitter, loss) {
   return t;
 }
 
+let running = false;
 async function startTest() {
   if (running) return;
   running = true;
   $('startBtn').disabled = true;
-  ['dl','ul','ping','jitter','loss','stability'].forEach(id=>setCard(id,'—',null,''));
+  
+  // Reset
+  ['dl','ul','ping','jitter','loss','stability'].forEach(id => {
+      const el = $('val-' + id);
+      if (el) el.textContent = '...';
+  });
   $('gaugeFill').style.transform = 'scaleY(0)';
-  $('gaugeVal').textContent = '...'; $('gaugeLabel').textContent = '측정 중';
+  $('gaugeVal').textContent = 'READY';
+  $('gaugeLabel').textContent = 'PREPARING';
   
   const { ping, jitter, loss } = await runPing();
-  setCard('ping', ping || '실패', null, ping? (ping>100?'warn':'done') : 'bad');
-  setCard('jitter', jitter, null, jitter>30?'warn':'done');
-  setCard('loss', loss+'%', null, loss>5?'bad':'done');
-
   const dl = await runDownload();
-  setCard('dl', dl ? dl.toFixed(1) : '실패', null, dl ? (dl>25?'done':'warn') : 'bad');
-
   const ul = await runUpload();
-  setCard('ul', ul ? ul.toFixed(1) : '실패', null, ul ? (ul>10?'done':'warn') : 'bad');
-
   const stab = stability(ping||999, jitter, loss);
-  setCard('stability', stab, null, stab>=80?'done':'warn');
   
+  $('val-jitter').textContent = jitter;
+  $('val-loss').textContent = loss;
+  $('val-stability').textContent = stab;
+
   const g = grade(dl, ping||999, stab);
   $('resultGrade').textContent = g;
+  $('resultGrade').className = 'text-9xl font-black tracking-tighter leading-none ' + (g === 'A' ? 'text-emerald-500' : g === 'B' ? 'text-blue-500' : 'text-yellow-500');
   $('resultTitle').textContent = TITLES[g];
   $('resultDesc').textContent = DESC[g];
   $('resultTips').innerHTML = '<ul class="space-y-1">' + tips(dl,ul,ping||999,jitter,loss).map(t=>`<li>${t}</li>`).join('') + '</ul>';
   
   showModal(g);
   saveHistory(dl, ul, ping, g);
+  
   setGauge(dl || 0, 200, 'GRADE');
   $('gaugeVal').textContent = g;
   setStatus('측정 완료', 'done');
+  
   running = false;
   $('startBtn').disabled = false;
 }
 
-getIP(); loadHistory();
+window.addEventListener('DOMContentLoaded', () => {
+    getIP(); 
+    loadHistory();
+});
