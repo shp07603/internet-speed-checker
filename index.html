@@ -53,241 +53,258 @@
         }
         body {
             min-height: 100dvh;
-            -webkit-tap-highlight-color: transparent;
         }
-        /* Side Menu Transition */
-        #side-menu {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .menu-open #side-menu {
-            transform: translateX(0);
-        }
-        .menu-overlay {
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        .menu-open .menu-overlay {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        details summary::-webkit-details-marker { display: none; }
     </style>
     <meta name="google-adsense-account" content="ca-pub-7374766314401295">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7374766314401295" crossorigin="anonymous"></script>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden">
     
-    <!-- Side Menu -->
-    <div id="side-menu-container" class="fixed inset-0 z-[200] flex justify-end">
-        <div class="menu-overlay absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="toggleMenu()"></div>
-        <div id="side-menu" class="relative w-72 h-full bg-white dark:bg-slate-900 shadow-2xl translate-x-full flex flex-col">
-            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                <span class="font-bold">MENU</span>
-                <button onclick="toggleMenu()" class="p-2 text-slate-400"><span class="material-symbols-outlined">close</span></button>
-            </div>
-            <div class="flex-1 p-6 space-y-2">
-                <a href="#" class="flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                    <span class="material-symbols-outlined">home</span>
-                    <span class="font-medium">Home</span>
-                </a>
-                <a href="#history-section" onclick="toggleMenu()" class="flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                    <span class="material-symbols-outlined">history</span>
-                    <span class="font-medium">History</span>
-                </a>
-                <a href="#about" onclick="toggleMenu()" class="flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                    <span class="material-symbols-outlined">info</span>
-                    <span class="font-medium">About</span>
-                </a>
-                <button onclick="alert('Coming Soon!')" class="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                    <span class="material-symbols-outlined">settings</span>
-                    <span class="font-medium">Settings</span>
-                </button>
-            </div>
-            <div class="p-6 border-t border-slate-100 dark:border-slate-800">
-                <p class="text-[10px] text-slate-500 uppercase tracking-widest text-center">My Network Score v2.0</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="max-w-4xl mx-auto w-full flex-1 flex flex-col relative z-10">
-        <header class="flex items-center justify-between p-6 pt-8 md:pt-12">
-            <button onclick="toggleMenu()" class="w-12 h-12 flex items-center justify-center rounded-2xl bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 active:scale-90 transition-transform">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
-            <div class="text-center">
-                <h1 class="text-xl font-bold tracking-tight">MNS</h1>
-                <p class="text-[10px] text-primary font-bold uppercase tracking-[0.2em]">Premium</p>
-            </div>
-            <button onclick="document.getElementById('history-section').scrollIntoView({behavior: 'smooth'})" class="w-12 h-12 flex items-center justify-center rounded-2xl bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 active:scale-90 transition-transform">
-                <span class="material-symbols-outlined">history</span>
-            </button>
+    <div class="max-w-4xl mx-auto w-full flex-1 flex flex-col relative z-10 p-6">
+        <!-- Header: Restored Full Brand Name -->
+        <header class="text-center py-12 md:py-20">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">
+                My Network <span class="text-primary">Score</span>
+            </h1>
+            <p class="text-slate-500 dark:text-slate-400 font-medium md:text-lg">
+                다운 속도 · 업로드 속도 · 반응속도 · 연결 떨림 · 데이터 씹힘 종합 분석
+            </p>
         </header>
 
-        <main class="flex-1 flex flex-col items-center px-6 py-4 md:py-8 gap-8">
-            <!-- Connection Info Card -->
-            <div class="w-full flex flex-col gap-4">
-                <div class="flex items-center justify-between p-5 rounded-[2rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50">
+        <main class="flex flex-col items-center gap-12">
+            <!-- Connection Info -->
+            <div class="w-full flex flex-col gap-6">
+                <div class="flex items-center justify-between p-6 rounded-[2.5rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50">
                     <div class="flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary relative">
-                            <span class="material-symbols-outlined text-3xl">wifi</span>
-                            <div class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900"></div>
+                        <div class="w-16 h-16 rounded-3xl bg-primary/10 flex items-center justify-center text-primary relative">
+                            <span class="material-symbols-outlined text-4xl">wifi_tethering</span>
+                            <div class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-4 border-white dark:border-slate-900"></div>
                         </div>
                         <div>
-                            <h3 class="font-bold text-sm" id="network-name">Detecting...</h3>
-                            <div class="flex items-center gap-2 mt-0.5">
-                                <span class="material-symbols-outlined text-[10px] text-slate-400">lan</span>
-                                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium" id="network-provider">Checking provider</p>
+                            <h3 class="font-bold text-lg" id="network-name">Detecting...</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 font-medium" id="network-provider">Checking provider</p>
+                        </div>
+                    </div>
+                    <div class="hidden md:block text-right">
+                        <div class="px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-black uppercase tracking-widest mb-1" id="stability-badge">Stable</div>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold">Connection Quality</p>
+                    </div>
+                </div>
+
+                <!-- Main Measurement Station -->
+                <div class="relative flex items-center justify-center w-full py-12">
+                    <button id="startBtn" onclick="startTest()" class="relative w-80 h-80 rounded-full bg-white dark:bg-slate-900 neumorphic-out flex items-center justify-center group active:scale-95 transition-all duration-300">
+                        <div class="w-[18rem] h-[18rem] rounded-full border-[8px] border-slate-50 dark:border-slate-800 flex flex-col items-center justify-center bg-gradient-to-br from-white to-slate-100 dark:from-slate-800 dark:to-slate-900 overflow-hidden relative">
+                            <div id="gaugeFill" class="absolute inset-0 bg-primary/10 transition-all duration-700 origin-bottom scale-y-0"></div>
+                            <div class="relative z-10 flex flex-col items-center">
+                                <span class="material-symbols-outlined text-5xl text-primary mb-4">rocket_launch</span>
+                                <span class="text-5xl font-black text-slate-900 dark:text-white" id="gaugeVal">START</span>
+                                <span class="text-xs text-slate-400 font-bold uppercase tracking-[0.3em] mt-2" id="gaugeLabel">MBPS</span>
                             </div>
                         </div>
+                    </button>
+                </div>
+
+                <!-- Technical Notice: Restored -->
+                <div id="techNotice" class="w-full p-8 rounded-[2rem] bg-primary/5 border border-primary/20 space-y-3">
+                    <h3 class="font-bold flex items-center gap-2 text-primary">
+                        <span class="material-symbols-outlined text-lg">lightbulb</span>
+                        정확한 측정을 위한 팁
+                    </h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        가장 정확한 결과를 위해 <strong>랜선을 연결한 PC의 Chrome 브라우저</strong> 사용을 권장하며, 
+                        측정 중에는 다른 다운로드나 영상 스트리밍을 일시 중단해 주세요.
+                    </p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="p-6 rounded-[2rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center text-center gap-2" id="card-dl">
+                        <span class="material-symbols-outlined text-primary">download</span>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Download</p>
+                        <p class="font-bold text-xl" id="val-dl">—</p>
                     </div>
-                    <div class="flex flex-col items-end gap-1">
-                        <div class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase tracking-wider" id="stability-badge">
-                            Stable
-                        </div>
-                        <p class="text-[8px] text-slate-500 dark:text-slate-500 uppercase tracking-widest font-bold">Network Quality</p>
+                    <div class="p-6 rounded-[2rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center text-center gap-2" id="card-ul">
+                        <span class="material-symbols-outlined text-primary">upload</span>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Upload</p>
+                        <p class="font-bold text-xl" id="val-ul">—</p>
+                    </div>
+                    <div class="p-6 rounded-[2rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center text-center gap-2" id="card-ping">
+                        <span class="material-symbols-outlined text-primary">timer</span>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Latency</p>
+                        <p class="font-bold text-xl" id="val-ping">—</p>
+                    </div>
+                    <div class="p-4 rounded-[1.5rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center text-center" id="card-jitter">
+                        <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Jitter</p>
+                        <p class="font-bold text-sm mt-1" id="val-jitter">—</p>
+                    </div>
+                    <div class="p-4 rounded-[1.5rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center text-center" id="card-loss">
+                        <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Packet Loss</p>
+                        <p class="font-bold text-sm mt-1" id="val-loss">—</p>
+                    </div>
+                    <div class="p-4 rounded-[1.5rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center text-center" id="card-stability">
+                        <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Quality Score</p>
+                        <p class="font-bold text-sm mt-1" id="val-stability">—</p>
                     </div>
                 </div>
 
-                <!-- Main Stats Grid -->
-                <div class="grid grid-cols-3 gap-4">
-                    <div class="p-5 rounded-[1.5rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center gap-2 transition-all duration-300" id="card-ping">
-                        <span class="material-symbols-outlined text-primary text-xl">timer</span>
-                        <div class="text-center">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Latency</p>
-                            <p class="font-bold text-base" id="val-ping">—</p>
-                        </div>
-                    </div>
-                    <div class="p-5 rounded-[1.5rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center gap-2 transition-all duration-300" id="card-dl">
-                        <span class="material-symbols-outlined text-primary text-xl">download</span>
-                        <div class="text-center">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Download</p>
-                            <p class="font-bold text-base" id="val-dl">—</p>
-                        </div>
-                    </div>
-                    <div class="p-5 rounded-[1.5rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center gap-2 transition-all duration-300" id="card-ul">
-                        <span class="material-symbols-outlined text-primary text-xl">upload</span>
-                        <div class="text-center">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Upload</p>
-                            <p class="font-bold text-base" id="val-ul">—</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Secondary Stats (Jitter, Loss, Stability) -->
-                <div class="grid grid-cols-3 gap-4 px-2">
-                    <div class="flex flex-col items-center" id="card-jitter">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.15em]">Jitter</span>
-                        <span class="font-bold text-xs mt-1" id="val-jitter">—</span>
-                    </div>
-                    <div class="flex flex-col items-center" id="card-loss">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.15em]">Loss</span>
-                        <span class="font-bold text-xs mt-1" id="val-loss">—</span>
-                    </div>
-                    <div class="flex flex-col items-center" id="card-stability">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.15em]">Score</span>
-                        <span class="font-bold text-xs mt-1" id="val-stability">—</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Start Button Area -->
-            <div class="relative flex items-center justify-center w-full max-w-[340px] aspect-square py-10">
-                <!-- Background decorative rings -->
-                <div class="absolute inset-0 rounded-full border border-slate-100 dark:border-slate-800/50 scale-[0.8]"></div>
-                <div class="absolute inset-0 rounded-full border border-slate-100 dark:border-slate-800/30 scale-[1.1]"></div>
-                
-                <button id="startBtn" onclick="startTest()" class="relative w-72 h-72 rounded-full bg-white dark:bg-slate-900 neumorphic-out flex items-center justify-center group active:scale-95 transition-all duration-300">
-                    <div class="w-64 h-64 rounded-full border-[6px] border-slate-50 dark:border-slate-800 flex flex-col items-center justify-center bg-gradient-to-br from-white to-slate-100 dark:from-slate-800 dark:to-slate-900 overflow-hidden relative">
-                        <!-- Modern Gauge Effect -->
-                        <div id="gaugeFill" class="absolute inset-0 bg-primary/5 dark:bg-primary/20 transition-all duration-700 origin-bottom scale-y-0"></div>
-                        
-                        <div class="relative z-10 flex flex-col items-center">
-                            <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-4 glow-primary transition-transform group-hover:scale-110">
-                                <span class="material-symbols-outlined text-4xl font-light">rocket_launch</span>
-                            </div>
-                            <span class="text-4xl font-black text-slate-900 dark:text-white tracking-tighter" id="gaugeVal">START</span>
-                            <span class="text-[10px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-[0.3em] mt-2" id="gaugeLabel">Test Now</span>
-                        </div>
-                    </div>
-                </button>
-            </div>
-
-            <!-- Status -->
-            <div id="status-container" class="flex flex-col items-center gap-3">
-                <div class="flex items-center gap-3 px-5 py-2 rounded-full bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50">
+                <!-- Status Text -->
+                <div class="flex items-center justify-center gap-3 py-4">
                     <span class="w-2 h-2 rounded-full bg-slate-400" id="statusDot"></span>
-                    <span id="statusText" class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Ready to go</span>
-                </div>
-                <div id="progressWrap" class="w-48 h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden hidden">
-                    <div id="progressFill" class="h-full bg-primary transition-all duration-300" style="width: 0%"></div>
+                    <span id="statusText" class="text-xs font-bold text-slate-500 uppercase tracking-[0.2em]">Ready to start test</span>
                 </div>
             </div>
 
-            <!-- Map Section -->
-            <div class="w-full space-y-6 py-8 border-t border-slate-100 dark:border-slate-800">
-                <div class="flex items-center justify-between px-2">
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm text-primary">location_on</span>
-                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Server: <span class="text-slate-900 dark:text-slate-200" id="server-location">Detecting...</span></p>
-                    </div>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Auto Selection</p>
-                </div>
-                <div class="w-full h-40 rounded-[2rem] overflow-hidden border border-slate-200 dark:border-slate-800 relative group">
-                    <img alt="Map showing network server location" class="w-full h-full object-cover opacity-40 grayscale dark:invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtg9XUtDLreVX4-6IHLOC3b4ey1kkIz_byejuKFaHeId1yk9qZHv-R3wWinzZ5eS-hA--XH0rg3qxY6He566sqkTNN0q8y--rcGpVvkDIF9SS8k-i0b1MDx9xNSWlBCz0j4mGa7nAoc61eKJbAALXpZYZlrUo0cMbON3e0A1k5g4In1wAeHczKXcGF5oc4FvydZVcwYmfRfody5dONoWB1dlQ6c6AbnGt6aXfAq73S_rGmQF0EaRsNbH8jS2GMhUZayQQGFP2Lo2eo"/>
-                    <div class="absolute inset-0 bg-gradient-to-t from-background-light dark:from-background-dark via-transparent to-transparent"></div>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="w-4 h-4 rounded-full bg-primary glow-primary flex items-center justify-center">
-                            <div class="w-8 h-8 rounded-full bg-primary/30 animate-ping"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Content Sections -->
-            <div class="w-full space-y-12 pb-24">
-                <section id="history-section" class="space-y-6">
+            <!-- Content Sections: FULL RESTORE -->
+            <div class="w-full space-y-20 py-20 border-t border-slate-200 dark:border-slate-800">
+                
+                <!-- 1. History Section -->
+                <section id="history-section" class="space-y-8">
                     <div class="flex items-center justify-between px-2">
-                        <h2 class="text-xl font-bold">Recent Tests</h2>
-                        <button class="text-[10px] font-bold text-slate-400 hover:text-red-500 transition-colors uppercase tracking-widest" onclick="clearHistory()">Clear All</button>
+                        <h2 class="text-2xl font-black tracking-tight">📜 나의 측정 기록</h2>
+                        <button class="text-[10px] font-bold text-slate-400 hover:text-red-500 transition-colors uppercase tracking-widest" onclick="clearHistory()">기록 초기화</button>
                     </div>
-                    <div class="overflow-x-auto rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="border-b border-slate-100 dark:border-slate-800">
-                                    <th class="p-5 font-bold text-slate-400 uppercase tracking-widest">Date</th>
-                                    <th class="p-5 font-bold text-slate-400 uppercase tracking-widest text-center">Download</th>
-                                    <th class="p-5 font-bold text-slate-400 uppercase tracking-widest text-center">Upload</th>
-                                    <th class="p-5 font-bold text-slate-400 uppercase tracking-widest text-center">Ping</th>
-                                    <th class="p-5 font-bold text-slate-400 uppercase tracking-widest text-right">Grade</th>
+                    <div class="overflow-x-auto rounded-[2.5rem] border border-slate-200 dark:border-slate-800">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 dark:bg-slate-900/50">
+                                <tr>
+                                    <th class="p-6 font-bold text-slate-400 uppercase tracking-widest">날짜</th>
+                                    <th class="p-6 font-bold text-slate-400 uppercase tracking-widest">다운로드</th>
+                                    <th class="p-6 font-bold text-slate-400 uppercase tracking-widest">업로드</th>
+                                    <th class="p-6 font-bold text-slate-400 uppercase tracking-widest">핑</th>
+                                    <th class="p-6 font-bold text-slate-400 uppercase tracking-widest text-right">등급</th>
                                 </tr>
                             </thead>
                             <tbody id="historyBody" class="divide-y divide-slate-100 dark:divide-slate-800">
-                                <!-- JS populated -->
-                                <tr><td colspan="5" class="p-10 text-center text-slate-400 font-medium">No records found.</td></tr>
+                                <tr><td colspan="5" class="p-20 text-center text-slate-400">아직 기록이 없습니다.</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </section>
 
-                <section id="about" class="p-8 rounded-[2.5rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 space-y-6">
-                    <h2 class="text-2xl font-black tracking-tight">Why Speed Test?</h2>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed font-medium">
-                        인터넷 속도는 단순히 숫자가 아닙니다. <strong>게이밍, 4K 스트리밍, 원격 업무</strong> 등 당신의 디지털 라이프 품질을 결정합니다.
-                        MNS는 단순 속도를 넘어 핑, 지터, 패킷 손실까지 정밀하게 분석하여 당신의 네트워크 건강 상태를 점수로 환산해 드립니다.
+                <!-- 2. About Section -->
+                <section id="about" class="space-y-8">
+                    <h2 class="text-3xl font-black tracking-tight">인터넷 속도 측정, 왜 중요할까요?</h2>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
+                        인터넷 속도는 단순히 웹페이지가 얼마나 빨리 열리는지를 넘어, <strong>온라인 게임의 승패, 4K 스트리밍의 버퍼링, 화상 회의의 끊김</strong>을 결정짓는 핵심 요소입니다.
+                        My Network Score는 단순한 다운로드 속도뿐만 아니라, 실제 체감 성능에 영향을 미치는 <strong>반응속도(Ping), 지터(Jitter), 패킷 손실률(Loss)</strong>까지 정밀하게 분석하여
+                        당신의 네트워크 상태를 객관적인 점수로 환산해 드립니다.
                     </p>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="p-8 rounded-[2rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 space-y-4">
+                            <h3 class="font-bold text-primary">⚡ 반응속도 (Ping)</h3>
+                            <p class="text-sm text-slate-500 leading-relaxed">내 컴퓨터가 서버에 신호를 보내고 응답을 받는 데 걸리는 시간입니다. 10ms 이하면 프로게이머급, 100ms 이상이면 렉을 느낄 수 있습니다.</p>
+                        </div>
+                        <div class="p-8 rounded-[2rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 space-y-4">
+                            <h3 class="font-bold text-primary">〰️ 지터 (Jitter)</h3>
+                            <p class="text-sm text-slate-500 leading-relaxed">반응속도가 얼마나 일정하게 유지되는지를 나타냅니다. 지터가 높으면 게임 캐릭터가 순간이동하거나 영상 통화가 끊깁니다.</p>
+                        </div>
+                        <div class="p-8 rounded-[2rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 space-y-4">
+                            <h3 class="font-bold text-primary">💨 패킷 손실 (Loss)</h3>
+                            <p class="text-sm text-slate-500 leading-relaxed">전송된 데이터 중 유실된 비율입니다. 0%가 가장 이상적이며, 1%라도 발생하면 심각한 네트워크 장애일 수 있습니다.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. FAQ Section -->
+                <section id="faq" class="space-y-8">
+                    <h2 class="text-3xl font-black tracking-tight">자주 묻는 질문 (FAQ)</h2>
+                    <div class="space-y-4">
+                        <details class="group rounded-[1.5rem] bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 overflow-hidden">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer font-bold list-none">
+                                Q. 측정 결과가 요금제 속도보다 낮게 나옵니다.
+                                <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <div class="p-6 pt-0 text-slate-500 text-sm border-t border-slate-100 dark:border-slate-800">
+                                A. 와이파이(Wi-Fi)를 사용 중이라면 공유기와의 거리, 벽 등으로 속도가 저하될 수 있습니다. 가장 정확한 측정은 PC에 랜선을 직접 연결하는 것입니다.
+                            </div>
+                        </details>
+                        <details class="group rounded-[1.5rem] bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 overflow-hidden">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer font-bold list-none">
+                                Q. 핑(Ping)을 줄이는 방법이 있나요?
+                                <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <div class="p-6 pt-0 text-slate-500 text-sm border-t border-slate-100 dark:border-slate-800">
+                                A. 1. 유선 연결을 사용하세요. 2. 공유기를 최신 펌웨어로 업데이트하세요. 3. 백그라운드 다운로드 프로그램을 종료하세요.
+                            </div>
+                        </details>
+                    </div>
+                </section>
+
+                <!-- 4. Guide Section -->
+                <section id="guide" class="space-y-8">
+                    <h2 class="text-3xl font-black tracking-tight">네트워크 문제 해결 가이드</h2>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="p-8 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+                            <h3 class="font-bold">1단계: 하드웨어 재부팅</h3>
+                            <p class="text-sm text-slate-500 leading-relaxed">모뎀과 공유기의 전원을 끄고 30초 기다린 후 다시 켜보세요. 내부 캐시가 정리되고 연결이 초기화됩니다.</p>
+                        </div>
+                        <div class="p-8 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+                            <h3 class="font-bold">2단계: 유선 연결 확인</h3>
+                            <p class="text-sm text-slate-500 leading-relaxed">무선 인터넷은 전파 간섭에 매우 취약합니다. 안정적인 속도를 원한다면 이더넷 케이블을 직접 연결하세요.</p>
+                        </div>
+                        <div class="p-8 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+                            <h3 class="font-bold">3단계: DNS 설정 변경</h3>
+                            <p class="text-sm text-slate-500 leading-relaxed">통신사 기본 DNS 대신 Google(8.8.8.8)이나 Cloudflare(1.1.1.1) DNS를 사용하면 속도가 개선될 수 있습니다.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Glossary Section -->
+                <section id="glossary" class="p-10 rounded-[3rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 space-y-8">
+                    <h2 class="text-2xl font-black">네트워크 용어 사전</h2>
+                    <dl class="space-y-6">
+                        <div>
+                            <dt class="font-bold text-primary mb-2">Mbps (Megabits per second)</dt>
+                            <dd class="text-sm text-slate-500">초당 전송되는 메가비트 단위의 데이터 양입니다. 8Mbps는 초당 약 1MB를 전송할 수 있음을 의미합니다.</dd>
+                        </div>
+                        <div>
+                            <dt class="font-bold text-primary mb-2">Latency (지연 시간)</dt>
+                            <dd class="text-sm text-slate-500">데이터가 한 지점에서 다른 지점으로 이동하는 데 걸리는 시간입니다. 흔히 '핑'이라고 부르며, 낮을수록 좋습니다.</dd>
+                        </div>
+                    </dl>
+                </section>
+
+                <!-- 6. Newsletter & Contact -->
+                <section class="grid md:grid-cols-2 gap-12 py-10">
+                    <div class="space-y-6">
+                        <h2 class="text-2xl font-black">Network Insights 구독</h2>
+                        <p class="text-sm text-slate-500">최신 네트워크 기술 동향과 인터넷 속도 향상 팁을 메일로 받아보세요.</p>
+                        <div class="flex gap-2">
+                            <input type="email" placeholder="email@example.com" class="flex-1 px-6 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none focus:border-primary transition-colors">
+                            <button class="px-8 py-4 bg-primary text-white rounded-2xl font-bold">구독</button>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <h2 class="text-2xl font-black">고객 지원 및 문의</h2>
+                        <p class="text-sm text-slate-500">서비스 이용 중 불편한 점이나 제안 사항이 있으시면 언제든지 연락 주시기 바랍니다.</p>
+                        <div class="space-y-2">
+                            <p class="text-sm font-bold text-primary">📧 support@mynetworkscore.com</p>
+                            <p class="text-xs text-slate-400">평일 09:00 - 18:00 (KST)</p>
+                        </div>
+                    </div>
                 </section>
             </div>
         </main>
 
-        <footer class="p-8 text-center space-y-4 border-t border-slate-100 dark:border-slate-800 mb-10">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.4em]">&copy; 2026 MY NETWORK SCORE</p>
+        <footer class="p-12 text-center space-y-8 border-t border-slate-200 dark:border-slate-800">
+            <div class="flex flex-wrap justify-center gap-8 text-sm font-bold text-slate-500">
+                <a href="terms.html" class="hover:text-primary transition-colors">이용약관</a>
+                <a href="privacy.html" class="hover:text-primary transition-colors">개인정보처리방침</a>
+                <a href="#about" class="hover:text-primary transition-colors">회사소개</a>
+            </div>
+            <div class="space-y-2">
+                <p class="text-xs text-slate-400 font-bold tracking-widest">&copy; 2026 MY NETWORK SCORE. ALL RIGHTS RESERVED.</p>
+                <p class="text-[10px] text-slate-500 max-w-xl mx-auto leading-relaxed">본 서비스의 측정 결과는 환경에 따라 달라질 수 있으며 법적인 효력을 갖지 않습니다. 측정 데이터는 서비스 품질 향상을 위한 통계 자료로 활용될 수 있습니다.</p>
+            </div>
         </footer>
     </div>
 
     <!-- Result Modal -->
-    <div class="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-slate-900/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300" id="modalOverlay">
+    <div class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300" id="modalOverlay">
         <canvas id="effectCanvas" class="absolute inset-0 pointer-events-none"></canvas>
-        <div class="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-[3rem] p-10 shadow-2xl border border-slate-200 dark:border-slate-800 transform scale-95 transition-transform duration-300" id="resultBox">
+        <div class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[3rem] p-10 shadow-2xl border border-slate-200 dark:border-slate-800 transform scale-95 transition-transform duration-300" id="resultBox">
             <button class="absolute top-8 right-8 text-slate-400 hover:text-slate-900 dark:hover:text-white" onclick="closeModal()">
                 <span class="material-symbols-outlined">close</span>
             </button>
@@ -302,7 +319,7 @@
                 </div>
                 <div class="bg-slate-50 dark:bg-slate-800/50 rounded-3xl p-6 text-left text-[11px] font-bold space-y-2 text-slate-600 dark:text-slate-400" id="resultTips"></div>
                 <button class="w-full py-5 bg-primary text-white rounded-[2rem] font-black shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest" onclick="closeModal()">
-                    Got it
+                    확인 완료
                 </button>
             </div>
         </div>
