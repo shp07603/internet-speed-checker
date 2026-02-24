@@ -1,9 +1,36 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QYQ0ZYJGKC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-QYQ0ZYJGKC');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Network Score — 내 인터넷 점수는?</title>
+<title>My Network Score — 내 인터넷 점수 및 속도 정밀 측정 도구</title>
+<meta name="description" content="인터넷 속도 측정(다운로드, 업로드), 핑(반응속도), 지터, 패킷 손실률을 정밀하게 측정하세요. 내 인터넷 점수를 확인하고 네트워크 성능을 개선하는 팁을 얻으세요.">
+<meta name="keywords" content="인터넷속도측정, 속도측정, 핑테스트, 지터측정, 패킷손실, 네트워크점수, 광랜속도, 5G속도">
+<link rel="canonical" href="https://mynetworkscore.com">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mynetworkscore.com/">
+<meta property="og:title" content="My Network Score — 내 인터넷 점수는 몇 점?">
+<meta property="og:description" content="단순한 속도 측정을 넘어, 당신의 네트워크 품질을 점수로 환산해 드립니다.">
+<meta property="og:image" content="https://mynetworkscore.com/og-image.jpg">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://mynetworkscore.com/">
+<meta property="twitter:title" content="My Network Score — 내 인터넷 점수는 몇 점?">
+<meta property="twitter:description" content="단순한 속도 측정을 넘어, 당신의 네트워크 품질을 점수로 환산해 드립니다.">
+<meta property="twitter:image" content="https://mynetworkscore.com/og-image.jpg">
+
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <meta name="google-adsense-account" content="ca-pub-7374766314401295">
@@ -44,11 +71,13 @@
 
   <button class="start-btn" id="startBtn" onclick="startTest()">▶ 테스트 시작</button>
 
-  <div class="error-note" id="errorNote">
-    ⚠️ <strong>일부 항목을 측정하지 못했습니다.</strong><br>
-    브라우저 보안 정책(CORS)으로 외부 서버 접근이 차단될 수 있습니다.
-    파일을 로컬에서 열지 말고 <strong>웹 서버에 올리거나 Chrome으로 실행</strong>하면 더 정확합니다.
-    핑·패킷손실 측정은 대부분 환경에서 정상 동작합니다.
+  <div class="technical-notice" id="techNotice">
+    <h3>💡 정확한 측정을 위한 팁</h3>
+    <p>
+      현재 브라우저 보안 정책(CORS)으로 인해 일부 외부 측정 서버 접근이 제한될 수 있습니다. 
+      가장 정확한 결과를 위해 <strong>랜선을 연결한 PC의 Chrome 브라우저</strong> 사용을 권장하며, 
+      측정 중에는 다른 다운로드나 영상 스트리밍을 일시 중단해 주세요.
+    </p>
   </div>
 
   <div class="status-bar">
@@ -202,14 +231,67 @@
     </details>
   </div>
 
+  <div class="content-section" id="guide">
+    <h2>네트워크 문제 해결 가이드</h2>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h3>1단계: 하드웨어 재부팅</h3>
+        <p>가장 고전적이지만 효과적인 방법입니다. 모뎀과 공유기의 전원을 끄고 30초 기다린 후 다시 켜보세요. 내부 캐시가 정리되고 연결이 초기화됩니다.</p>
+      </div>
+      <div class="guide-card">
+        <h3>2단계: 유선 연결 확인</h3>
+        <p>무선 인터넷은 물리적 장애물과 전파 간섭에 매우 취약합니다. 안정적인 속도를 원한다면 Cat 5e 이상의 이더넷 케이블을 사용하여 직접 연결하세요.</p>
+      </div>
+      <div class="guide-card">
+        <h3>3단계: DNS 설정 변경</h3>
+        <p>통신사 기본 DNS 대신 Google DNS(8.8.8.8)나 Cloudflare DNS(1.1.1.1)를 사용하면 응답 속도가 개선될 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-section" id="glossary">
+    <h2>네트워크 용어 사전</h2>
+    <dl class="glossary-list">
+      <dt>Mbps (Megabits per second)</dt>
+      <dd>초당 전송되는 메가비트 단위의 데이터 양입니다. 8Mbps는 초당 약 1MB를 전송할 수 있음을 의미합니다.</dd>
+      
+      <dt>Latency (지연 시간)</dt>
+      <dd>데이터가 한 지점에서 다른 지점으로 이동하는 데 걸리는 시간입니다. 흔히 '핑'이라고 부르며, 낮을수록 실시간성이 높아집니다.</dd>
+      
+      <dt>Bandwidth (대역폭)</dt>
+      <dd>네트워크가 특정 시간 동안 처리할 수 있는 최대 데이터 전송 용량입니다. 고속도로의 차선 수에 비유할 수 있습니다.</dd>
+      
+      <dt>Packet (패킷)</dt>
+      <dd>네트워크를 통해 전송되는 데이터의 작은 조각입니다. 웹페이지나 영상은 수만 개의 패킷으로 나뉘어 전송됩니다.</dd>
+    </dl>
+  </div>
+
+  <div class="content-section" id="contact">
+    <h2>고객 지원 및 문의</h2>
+    <p>서비스 이용 중 불편한 점이나 제안 사항이 있으시면 언제든지 아래 메일로 연락 주시기 바랍니다. 사용자의 소중한 의견을 바탕으로 더 나은 측정 환경을 만들어 가겠습니다.</p>
+    <div class="contact-info">
+      <span class="contact-item">📧 support@mynetworkscore.com</span>
+      <span class="contact-item">🕒 평일 09:00 - 18:00 (KST)</span>
+    </div>
+  </div>
+
   <footer>
     <div class="footer-content">
+      <div class="newsletter">
+        <h3>Network Insights 구독</h3>
+        <p>최신 네트워크 기술 동향과 인터넷 속도 향상 팁을 메일로 받아보세요.</p>
+        <div class="newsletter-form">
+          <input type="email" placeholder="email@example.com" disabled>
+          <button disabled>구독하기</button>
+        </div>
+      </div>
       <div class="footer-links">
         <a href="terms.html">이용약관</a>
         <a href="privacy.html">개인정보처리방침</a>
+        <a href="#about">회사소개</a>
       </div>
       <p class="copyright">&copy; 2024 My Network Score. All rights reserved.</p>
-      <p class="disclaimer">본 서비스의 측정 결과는 네트워크 환경에 따라 달라질 수 있으며, 법적인 효력을 갖지 않습니다.</p>
+      <p class="disclaimer">본 서비스의 측정 결과는 네트워크 환경에 따라 달라질 수 있으며, 법적인 효력을 갖지 않습니다. 측정 데이터는 서비스 품질 향상을 위한 통계 자료로 활용될 수 있습니다.</p>
     </div>
   </footer>
 

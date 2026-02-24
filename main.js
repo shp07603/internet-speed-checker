@@ -380,10 +380,11 @@ async function startTest() {
   if (running) return;
   running = true;
   $('startBtn').disabled = true;
-  // $('resultBox').className = 'result-box'; // Old inline logic
   closeModal(); // Hide modal if open
   
-  $('errorNote').className = 'error-note';
+  const techNotice = $('techNotice');
+  if (techNotice) techNotice.style.display = 'none';
+  
   history.length = 0; $('pingChart').innerHTML = '';
   ['dl','ul','ping','jitter','loss','stability'].forEach(id=>setCard(id,'—',null,''));
   $('gaugeFill').style.strokeDashoffset = 565;
@@ -445,7 +446,7 @@ async function startTest() {
   setStatus(anyError
     ? '⚠️ 일부 항목 측정 불가 (CORS 차단) — 핑·안정성 결과는 유효합니다'
     : '✅ 모든 측정 완료! 아래 결과를 확인하세요', anyError?'error':'done');
-  if (anyError) $('errorNote').className = 'error-note show';
+  if (anyError && techNotice) techNotice.style.display = 'block';
 
   running = false;
   $('startBtn').disabled = false;
