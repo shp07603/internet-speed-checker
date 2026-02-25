@@ -1,3 +1,13 @@
 User-agent: *
 Allow: /
-Sitemap: https://mynetworkscore.com/sitemap.xml
+
+User-agent: Yeti
+Allow: /
+
+User-agent: Daumoa
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://my-network.cc/sitemap.xml
