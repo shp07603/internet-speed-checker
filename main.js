@@ -149,7 +149,7 @@ const translations = {
     }
 };
 
-let currentLang = localStorage.getItem('lang') || (navigator.language.startsWith('ko') ? 'ko' : 'en');
+let currentLang = localStorage.getItem('lang') || 'en';
 
 function i18n(key) {
     return translations[currentLang][key] || key;
