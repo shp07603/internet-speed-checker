@@ -43,24 +43,48 @@
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "My Network Score",
-      "url": "https://my-network.cc/",
-      "description": "Comprehensive internet speed and quality testing tool that measures download, upload, ping, jitter, and packet loss.",
-      "applicationCategory": "UtilitiesApplication",
-      "operatingSystem": "All",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "My Network Score",
+        "url": "https://my-network.cc/",
+        "description": "Comprehensive internet speed and quality testing tool that measures download, upload, ping, jitter, and packet loss.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "author": {
+          "@type": "Organization",
+          "name": "My Network Score"
+        }
       },
-      "author": {
-        "@type": "Organization",
-        "name": "My Network Score"
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "인터넷 속도 측정 결과에서 지터(Jitter)란 무엇인가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "지터는 네트워크 지연 시간의 변동성을 의미합니다. 지터 값이 높으면 패킷이 도달하는 간격이 불규칙해져 화상 회의 끊김이나 온라인 게임의 렉(Lag) 현상을 유발합니다. 안정적인 연결을 위해서는 10ms 이하의 낮은 지터 값이 권장됩니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "패킷 손실(Packet Loss)이 발생하는 이유는 무엇인가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "패킷 손실은 네트워크 혼잡, 불량한 하드웨어, 또는 신호 간섭으로 인해 데이터가 목적지에 도달하지 못할 때 발생합니다. 0%가 가장 이상적이며, 손실이 발생하면 웹페이지 로딩 실패나 실시간 스트리밍 품질 저하가 나타날 수 있습니다."
+            }
+          }
+        ]
       }
-    }
+    ]
     </script>
     
     <!-- Fonts & Icons (Fixed Loading) -->
@@ -260,10 +284,25 @@
             <div class="w-full space-y-24 py-24 border-t border-slate-200 dark:border-slate-800">
                 <section id="about" class="space-y-10">
                     <h2 class="text-4xl font-black tracking-tight" data-i18n="about_title">왜 My Network Score인가요?</h2>
-                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-lg max-w-3xl" data-i18n="about_desc">
-                        인터넷 속도는 단순히 숫자가 아닙니다. 온라인 게임의 승패를 가르는 <strong>0.1초의 반응속도</strong>, 4K 고화질 영상이 멈추지 않는 <strong>데이터의 흐름</strong>, 
-                        그리고 화상 회의 중 목소리가 끊기지 않는 <strong>연결의 결속력</strong>이 모두 포함되어야 합니다. 우리는 이 모든 요소를 분석하여 당신의 디지털 환경을 진단합니다.
-                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div class="space-y-4">
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-lg" data-i18n="about_desc_1">
+                                인터넷 속도는 단순히 숫자가 아닙니다. 온라인 게임의 승패를 가르는 <strong>0.1초의 반응속도</strong>, 4K 고화질 영상이 멈추지 않는 <strong>데이터의 흐름</strong>이 중요합니다.
+                            </p>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-lg" data-i18n="about_desc_2">
+                                우리는 단순 다운로드 속도를 넘어 <strong>지터(Jitter)</strong>와 <strong>패킷 손실(Packet Loss)</strong>을 정밀 분석하여 당신의 네트워크 품질을 종합 점수로 환산합니다.
+                            </p>
+                        </div>
+                        <div class="bg-primary/5 rounded-[2.5rem] p-8 border border-primary/10">
+                            <h3 class="font-bold mb-4 text-primary" data-i18n="about_table_title">활동별 권장 속도</h3>
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex justify-between"><span data-i18n="about_table_4k">4K 스트리밍</span><span class="font-bold">25 Mbps+</span></li>
+                                <li class="flex justify-between"><span data-i18n="about_table_gaming">온라인 게이밍</span><span class="font-bold">Ping < 20ms</span></li>
+                                <li class="flex justify-between"><span data-i18n="about_table_meeting">화상 회의 (HD)</span><span class="font-bold">3 Mbps+</span></li>
+                                <li class="flex justify-between"><span data-i18n="about_table_file">대용량 파일 전송</span><span class="font-bold">100 Mbps+</span></li>
+                            </ul>
+                        </div>
+                    </div>
                 </section>
 
                 <section id="faq" class="space-y-12">
@@ -275,7 +314,7 @@
                                 <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
                             </summary>
                             <div class="p-8 pt-0 text-slate-500 leading-relaxed border-t border-slate-50 dark:border-slate-800" data-i18n="faq_a1">
-                                지터가 높다는 것은 반응속도가 일정하지 않다는 뜻입니다. 게임 캐릭터가 갑자기 순간이동하거나, 화상 회의 중에 상대방의 목소리가 빨라졌다가 느려지는 현상의 주범입니다. 스트리밍 환경에서 매우 치명적입니다.
+                                지터가 높다는 것은 반응속도가 일정하지 않다는 뜻입니다. 게임 캐릭터가 갑자기 순간이동하거나, 화상 회의 중에 상대방의 목소리가 빨라졌다가 느려지는 현상의 주범입니다. 스트리밍 환경에서 매우 치명적입니다. 안정적인 연결을 위해 10ms 이하를 권장합니다.
                             </div>
                         </details>
                         <details class="group rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
@@ -322,7 +361,8 @@
                 <a href="#about" class="hover:text-primary" data-i18n="footer_contact">Contact</a>
             </div>
             <div class="space-y-4">
-                <p class="text-[10px] text-slate-500 font-black tracking-[0.5em]">&copy; 2026 MY NETWORK SCORE. ALL RIGHTS RESERVED.</p>
+                <p class="text-[10px] text-slate-500 font-black tracking-[0.5em] uppercase">&copy; 2026 MY NETWORK SCORE. ALL RIGHTS RESERVED.</p>
+                <p class="text-[9px] text-slate-400 font-medium" data-i18n="footer_updated">Last Updated: February 2026</p>
             </div>
         </footer>
     </div>
