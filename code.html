@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Speed Test Home - Variant 2</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .neumorphic-inset {
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.05);
+        }
+        .neumorphic-out {
+            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.4), -4px -4px 12px rgba(255, 255, 255, 0.05);
+        }
+        .glow-primary {
+            box-shadow: 0 0 25px rgba(19, 127, 236, 0.4);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden">
+<header class="flex items-center justify-between p-6 pt-12">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-background-light dark:bg-slate-800/50 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="text-center">
+<h1 class="text-lg font-bold tracking-tight">Speed Test</h1>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-widest">Premium</p>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-background-light dark:bg-slate-800/50 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">history</span>
+</button>
+</header>
+<main class="flex-1 flex flex-col items-center justify-between px-6 py-8">
+<div class="w-full flex flex-col gap-4">
+<div class="flex items-center justify-between p-4 rounded-2xl bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">wifi</span>
+</div>
+<div>
+<h3 class="font-semibold text-sm">Home-WiFi_5G</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Starlink Internet Services</p>
+</div>
+</div>
+<div class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase">
+                    Stable
+                </div>
+</div>
+<div class="grid grid-cols-3 gap-3">
+<div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-slate-400 text-sm">timer</span>
+<span class="text-xs font-medium text-slate-500">Latency</span>
+<span class="font-bold text-sm">24 ms</span>
+</div>
+<div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-slate-400 text-sm">download</span>
+<span class="text-xs font-medium text-slate-500">Download</span>
+<span class="font-bold text-sm">--</span>
+</div>
+<div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-slate-400 text-sm">upload</span>
+<span class="text-xs font-medium text-slate-500">Upload</span>
+<span class="font-bold text-sm">--</span>
+</div>
+</div>
+</div>
+<div class="relative flex items-center justify-center w-full max-w-[300px] aspect-square py-12">
+<div class="absolute inset-0 rounded-full bg-primary/5 dark:bg-primary/10 scale-110"></div>
+<div class="absolute inset-0 rounded-full bg-primary/5 dark:bg-primary/5 scale-125"></div>
+<button class="relative w-56 h-56 rounded-full bg-background-light dark:bg-background-dark neumorphic-out flex flex-col items-center justify-center group active:scale-95 transition-transform duration-200 border-4 border-slate-100 dark:border-slate-800">
+<div class="w-48 h-48 rounded-full border border-primary/20 flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900">
+<span class="material-symbols-outlined text-5xl text-primary font-light mb-2">rocket_launch</span>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">START</span>
+</div>
+</button>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-8 flex gap-1 items-end h-8">
+<div class="w-1.5 h-3 bg-primary/20 rounded-full"></div>
+<div class="w-1.5 h-5 bg-primary/40 rounded-full"></div>
+<div class="w-1.5 h-8 bg-primary rounded-full"></div>
+<div class="w-1.5 h-6 bg-primary/60 rounded-full"></div>
+<div class="w-1.5 h-4 bg-primary/30 rounded-full"></div>
+</div>
+</div>
+<div class="w-full space-y-4 text-center">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Server Location: <span class="text-slate-900 dark:text-slate-100">London, UK</span></p>
+<div class="w-full h-32 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 relative">
+<img alt="Map showing network server location" class="w-full h-full object-cover opacity-60 grayscale dark:invert" data-alt="Minimal map showing London United Kingdom server" data-location="London" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtg9XUtDLreVX4-6IHLOC3b4ey1kkIz_byejuKFaHeId1yk9qZHv-R3wWinzZ5eS-hA--XH0rg3qxY6He566sqkTNN0q8y--rcGpVvkDIF9SS8k-i0b1MDx9xNSWlBCz0j4mGa7nAoc61eKJbAALXpZYZlrUo0cMbON3e0A1k5g4In1wAeHczKXcGF5oc4FvydZVcwYmfRfody5dONoWB1dlQ6c6AbnGt6aXfAq73S_rGmQF0EaRsNbH8jS2GMhUZayQQGFP2Lo2eo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-light dark:from-background-dark to-transparent"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-4 h-4 rounded-full bg-primary glow-primary flex items-center justify-center">
+<div class="w-8 h-8 rounded-full bg-primary/30 animate-ping"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<nav class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-6 py-4 pb-8 flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined filled">speed</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Test</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Reports</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Coverage</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Settings</span>
+</a>
+</nav>
+</body></html>
