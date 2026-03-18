@@ -214,10 +214,9 @@ async function getIP() {
         // Highlight local country on map if it exists
         const countryEl = $('country-' + currentCountryCode);
         if (countryEl) countryEl.classList.add('opacity-100', 'stroke-primary', 'stroke-[2px]');
-    }
-    if (infoData.city && infoData.country_name) {
-        const locEl = $('server-location');
-        if (locEl) locEl.textContent = infoData.city + ', ' + infoData.country_name;
+        
+        // Update Map Overlay
+        if ($('map-loc-name')) $('map-loc-name').textContent = (infoData.city || 'Unknown') + ', ' + currentCountryCode;
     }
   } catch(e) { 
       currentIP = 'Unknown'; 
@@ -231,6 +230,7 @@ function updateWeather(grade) {
     const infoBox = $('localWeatherInfo');
     const iconEl = $('weatherIcon');
     const statusText = $('weatherStatusText');
+    const mapCondition = $('map-condition');
     
     if (!infoBox) return;
     infoBox.classList.remove('hidden');
@@ -241,30 +241,34 @@ function updateWeather(grade) {
     let state = 'sunny';
     let label = 'Sunny & Fast';
     let icon = 'wb_sunny';
+    let condColor = 'text-emerald-500';
     
     if (grade === 'A' || grade === 'B') {
         state = 'sunny';
         countryEl.classList.add('active-sunny');
         label = grade === 'A' ? 'Perfect Skies' : 'Sunny & Clear';
         icon = 'wb_sunny';
+        condColor = 'text-emerald-500';
     } else if (grade === 'C') {
         state = 'cloudy';
         countryEl.classList.add('active-cloudy');
         label = 'Cloudy Connection';
         icon = 'cloud';
+        condColor = 'text-blue-500';
     } else {
         state = 'stormy';
         countryEl.classList.add('active-stormy');
         label = 'Severe Storm Warning';
         icon = 'thunderstorm';
+        condColor = 'text-red-500';
     }
     
-    iconEl.innerHTML = `<span class="material-symbols-outlined">${icon}</span>`;
+    iconEl.innerHTML = `<span class="material-symbols-outlined text-4xl">${icon}</span>`;
     statusText.textContent = label;
-    
-    // Optional: Simulation for other countries to feel "global"
-    const usEl = $('country-US');
-    if (usEl) usEl.classList.add('active-cloudy');
+    if (mapCondition) {
+        mapCondition.textContent = label;
+        mapCondition.className = 'text-[11px] font-black uppercase ' + condColor;
+    }
 }
 
 function loadHistory() {

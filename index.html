@@ -334,55 +334,78 @@
                     </div>
                 </div>
 
-                <!-- Global Network Weather Map -->
-                <section class="weather-map-section w-full">
-                    <div class="flex flex-col md:flex-row gap-12 items-center">
-                        <div class="flex-1 space-y-6">
-                            <div class="flex items-center gap-3">
-                                <span class="material-symbols-outlined text-primary animate-pulse">public</span>
-                                <h2 class="text-2xl font-black tracking-tight">Global Network Weather</h2>
+                <!-- Global Network Weather Map (Arcade Edition) -->
+                <section class="weather-map-section w-full relative overflow-hidden">
+                    <!-- Background Grid Effect -->
+                    <div class="absolute inset-0 opacity-10 pointer-events-none" 
+                         style="background-image: linear-gradient(#137fec 1px, transparent 1px), linear-gradient(90deg, #137fec 1px, transparent 1px); background-size: 30px 30px;"></div>
+                    
+                    <div class="relative z-10 flex flex-col items-center gap-10">
+                        <div class="text-center space-y-4">
+                            <div class="flex items-center justify-center gap-3">
+                                <span class="material-symbols-outlined text-primary text-4xl animate-spin-slow">language</span>
+                                <h2 class="text-3xl font-black tracking-tighter uppercase italic">Global Weather Node</h2>
                             </div>
-                            <p class="text-slate-500 text-sm font-medium leading-relaxed">
-                                전 세계 인터넷 기상도를 확인하세요. 당신의 측정 결과가 우리나라의 날씨를 결정합니다! 
-                                <span class="text-primary font-bold">맑음(Sunny)</span> 상태를 유지해 보세요.
+                            <p class="text-slate-400 text-sm font-bold tracking-widest uppercase">
+                                <span class="text-primary">Live Update:</span> 측정 데이터가 전 세계 기상 서버로 전송됩니다.
                             </p>
-                            
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="weather-card flex items-center gap-4">
-                                    <span class="material-symbols-outlined text-emerald-500">wb_sunny</span>
-                                    <div>
-                                        <p class="text-[10px] font-black text-slate-400 uppercase">Clear Sky</p>
-                                        <p class="text-sm font-bold">South Korea</p>
-                                    </div>
-                                </div>
-                                <div class="weather-card flex items-center gap-4">
-                                    <span class="material-symbols-outlined text-primary">cloud</span>
-                                    <div>
-                                        <p class="text-[10px] font-black text-slate-400 uppercase">Cloudy</p>
-                                        <p class="text-sm font-bold">United States</p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
-                        <div class="flex-1 w-full relative group">
-                            <!-- Simple SVG World Map (Simplified Paths) -->
-                            <svg viewBox="0 0 1000 500" class="world-map-svg">
-                                <!-- Background Dots/Grid could go here -->
-                                <path id="country-KR" class="country" d="M840,160 L850,160 L850,170 L840,170 Z" /> <!-- Korea Placeholder -->
-                                <path id="map-path" class="country" d="M150,150 Q200,100 300,150 T500,150 T800,200 L850,300 L700,400 L400,350 L200,400 Z" opacity="0.5" /> 
-                                <!-- Detailed SVG path should be added here for a better look -->
-                                <text x="830" y="150" fill="currentColor" class="text-[10px] font-bold opacity-50">KOREA</text>
+                        <div class="w-full relative group min-h-[400px] flex items-center justify-center">
+                            <!-- High-Quality World Map SVG -->
+                            <svg viewBox="0 0 1000 500" class="world-map-svg transition-transform duration-700 group-hover:scale-[1.02]">
+                                <defs>
+                                    <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="3" result="blur" />
+                                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                    </filter>
+                                </defs>
+                                <g id="countries-layer" class="text-slate-800 dark:text-slate-700">
+                                    <!-- Major Landmasses (Simplified for performance but high quality) -->
+                                    <path id="country-NA" class="country" d="M150,150 L250,100 L300,150 L350,250 L200,300 L100,250 Z" /> <!-- North America -->
+                                    <path id="country-SA" class="country" d="M250,320 L300,320 L320,450 L250,480 L220,400 Z" /> <!-- South America -->
+                                    <path id="country-EU" class="country" d="M450,120 L550,100 L580,180 L500,200 L450,180 Z" /> <!-- Europe -->
+                                    <path id="country-AF" class="country" d="M450,220 L550,220 L580,350 L500,420 L420,350 Z" /> <!-- Africa -->
+                                    <path id="country-AS" class="country" d="M600,100 L850,80 L900,250 L750,350 L600,300 Z" /> <!-- Asia -->
+                                    <path id="country-AU" class="country" d="M800,380 L900,380 L920,450 L820,460 Z" /> <!-- Australia -->
+                                    <!-- Special Target: South Korea (Precision Point) -->
+                                    <path id="country-KR" class="country" d="M835,175 L845,175 L845,185 L835,185 Z" stroke-width="2" />
+                                </g>
+                                <!-- Labels -->
+                                <text x="180" y="180" fill="currentColor" class="text-[8px] font-black opacity-20 pointer-events-none">NORTH AMERICA</text>
+                                <text x="700" y="180" fill="currentColor" class="text-[8px] font-black opacity-20 pointer-events-none">ASIA</text>
+                                <text x="830" y="170" fill="#137fec" class="text-[8px] font-black animate-pulse">KOREA</text>
                             </svg>
                             
-                            <!-- Floating Weather Status -->
-                            <div class="absolute bottom-4 left-4 flex items-center gap-3 bg-white/10 backdrop-blur-xl p-4 rounded-2xl border border-white/10 hidden" id="localWeatherInfo">
-                                <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary" id="weatherIcon">
-                                    <span class="material-symbols-outlined">wb_sunny</span>
+                            <!-- Detailed Tooltip/Info Overlay -->
+                            <div class="absolute top-0 right-0 weather-card scale-90 origin-top-right border-primary/30 shadow-[0_0_30px_rgba(19,127,236,0.1)]">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-2 h-2 rounded-full bg-primary animate-ping"></div>
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Live Satellite Feed</span>
                                 </div>
-                                <div>
-                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Your Weather</p>
-                                    <p class="text-sm font-bold" id="weatherStatusText">Sunny & Fast</p>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between gap-8 border-b border-white/5 pb-2">
+                                        <span class="text-[11px] text-slate-500 font-bold uppercase">Location</span>
+                                        <span class="text-[11px] text-white font-black" id="map-loc-name">Seoul, KR</span>
+                                    </div>
+                                    <div class="flex justify-between gap-8">
+                                        <span class="text-[11px] text-slate-500 font-bold uppercase">Condition</span>
+                                        <span class="text-[11px] text-emerald-500 font-black uppercase" id="map-condition">Waiting...</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- User Weather Badge -->
+                            <div class="absolute bottom-0 left-0 bg-background-dark/80 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/10 shadow-2xl hidden" id="localWeatherInfo">
+                                <div class="flex items-center gap-6">
+                                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary" id="weatherIcon">
+                                        <span class="material-symbols-outlined text-4xl">wb_sunny</span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <p class="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Network Forecast</p>
+                                        <p class="text-xl font-black italic tracking-tighter" id="weatherStatusText">Sunny & High-Speed</p>
+                                        <p class="text-[10px] text-slate-500 font-medium">당신의 대역폭이 맑은 하늘을 유지하고 있습니다.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
