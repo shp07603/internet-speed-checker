@@ -194,8 +194,69 @@ function initGeoChart() {
             ['KR', 50], ['US', 50], ['JP', 50], ['GB', 50], ['DE', 50]
         ]);
         geoChart = new google.visualization.GeoChart($('geochart_div'));
+        
+        // Add Selection Event
+        google.visualization.events.addListener(geoChart, 'select', () => {
+            const selection = geoChart.getSelection();
+            if (selection.length > 0) {
+                const row = selection[0].row;
+                const countryCode = geoData.getValue(row, 0);
+                const score = geoData.getValue(row, 1);
+                showCountryInfo(countryCode, score);
+            }
+        });
+
         geoChart.draw(geoData, geoOptions);
     });
+}
+
+function showCountryInfo(code, score) {
+    const overlay = $('countryModalOverlay');
+    const nameEl = $('popupCountryName');
+    const statusEl = $('popupStatus');
+    const signalEl = $('popupSignal');
+    const descEl = $('popupDesc');
+    const iconEl = $('countryPopupIcon');
+
+    // Region Names Mapping (Simplified)
+    const names = { 'KR': 'South Korea', 'US': 'United States', 'JP': 'Japan', 'GB': 'United Kingdom', 'DE': 'Germany' };
+    nameEl.textContent = names[code] || code;
+
+    if (score >= 80) {
+        statusEl.textContent = 'Sunny';
+        statusEl.className = 'text-emerald-500 font-black uppercase';
+        signalEl.textContent = 'Ultra Fast';
+        descEl.textContent = '대역폭이 매우 넓고 지연시간이 거의 없는 맑은 상태입니다.';
+        iconEl.innerHTML = '<span class="material-symbols-outlined text-5xl">wb_sunny</span>';
+    } else if (score >= 40) {
+        statusEl.textContent = 'Cloudy';
+        statusEl.className = 'text-blue-500 font-black uppercase';
+        signalEl.textContent = 'Stable';
+        descEl.textContent = '데이터 흐름이 안정적이지만 다소 혼잡할 수 있는 상태입니다.';
+        iconEl.innerHTML = '<span class="material-symbols-outlined text-5xl">cloud</span>';
+    } else {
+        statusEl.textContent = 'Stormy';
+        statusEl.className = 'text-red-500 font-black uppercase';
+        signalEl.textContent = 'Unstable';
+        descEl.textContent = '데이터 패킷 손실이 우려되는 강력한 노이즈가 발생하고 있습니다.';
+        iconEl.innerHTML = '<span class="material-symbols-outlined text-5xl">thunderstorm</span>';
+    }
+
+    overlay.classList.remove('hidden');
+    setTimeout(() => {
+        overlay.classList.remove('opacity-0');
+        $('countryBox').classList.remove('scale-90');
+    }, 10);
+}
+
+function closeCountryModal() {
+    const overlay = $('countryModalOverlay');
+    overlay.classList.add('opacity-0');
+    $('countryBox').classList.add('scale-90');
+    setTimeout(() => {
+        overlay.classList.add('hidden');
+        if (geoChart) geoChart.setSelection([]); // Reset selection on map
+    }, 300);
 }
 
 function updateWeather(grade) {
