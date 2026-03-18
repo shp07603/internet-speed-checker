@@ -351,30 +351,33 @@
                             </p>
                         </div>
 
-                        <div class="w-full relative group min-h-[400px] flex items-center justify-center">
-                            <!-- High-Quality World Map SVG -->
-                            <svg viewBox="0 0 1000 500" class="world-map-svg transition-transform duration-700 group-hover:scale-[1.02]">
-                                <defs>
-                                    <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
-                                        <feGaussianBlur stdDeviation="3" result="blur" />
-                                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                                    </filter>
-                                </defs>
-                                <g id="countries-layer" class="text-slate-800 dark:text-slate-700">
-                                    <!-- Major Landmasses (Simplified for performance but high quality) -->
-                                    <path id="country-NA" class="country" d="M150,150 L250,100 L300,150 L350,250 L200,300 L100,250 Z" /> <!-- North America -->
-                                    <path id="country-SA" class="country" d="M250,320 L300,320 L320,450 L250,480 L220,400 Z" /> <!-- South America -->
-                                    <path id="country-EU" class="country" d="M450,120 L550,100 L580,180 L500,200 L450,180 Z" /> <!-- Europe -->
-                                    <path id="country-AF" class="country" d="M450,220 L550,220 L580,350 L500,420 L420,350 Z" /> <!-- Africa -->
-                                    <path id="country-AS" class="country" d="M600,100 L850,80 L900,250 L750,350 L600,300 Z" /> <!-- Asia -->
-                                    <path id="country-AU" class="country" d="M800,380 L900,380 L920,450 L820,460 Z" /> <!-- Australia -->
-                                    <!-- Special Target: South Korea (Precision Point) -->
-                                    <path id="country-KR" class="country" d="M835,175 L845,175 L845,185 L835,185 Z" stroke-width="2" />
+                        <div class="w-full relative group min-h-[450px] flex items-center justify-center bg-slate-900/50 rounded-[3rem] p-8 border border-white/5 shadow-inner">
+                            <!-- High-Quality Realistic World Map SVG -->
+                            <svg viewBox="0 0 1000 500" class="world-map-svg transition-all duration-700 group-hover:scale-[1.01] drop-shadow-2xl">
+                                <style>
+                                    .country-path { fill: #1e293b; stroke: #334155; stroke-width: 0.3; transition: all 0.4s ease; }
+                                    .country-path:hover { fill: #334155; stroke: #137fec; cursor: pointer; }
+                                    .active-sunny { fill: #10b981 !important; filter: drop-shadow(0 0 5px #10b981); }
+                                    .active-cloudy { fill: #137fec !important; filter: drop-shadow(0 0 5px #137fec); }
+                                    .active-stormy { fill: #ef4444 !important; filter: drop-shadow(0 0 8px #ef4444); animation: lightning-flash 1.5s infinite; }
+                                </style>
+                                <g id="map-root">
+                                    <!-- Simplified but accurate world paths -->
+                                    <path id="country-NA" class="country-path" d="M185,100 L210,80 L250,70 L300,100 L320,150 L280,250 L200,280 L120,220 L100,150 Z" /> <!-- Simplified NA -->
+                                    <path id="country-SA" class="country-path" d="M280,280 L330,280 L350,350 L330,450 L300,480 L260,450 L240,350 Z" /> <!-- Simplified SA -->
+                                    <path id="country-AF" class="country-path" d="M480,200 L550,200 L600,250 L600,350 L550,420 L480,430 L450,350 L450,250 Z" /> <!-- Simplified AF -->
+                                    <path id="country-EU" class="country-path" d="M480,80 L550,80 L580,150 L550,180 L480,180 L450,150 Z" /> <!-- Simplified EU -->
+                                    <path id="country-AS" class="country-path" d="M600,80 L850,80 L920,200 L900,350 L750,380 L600,300 Z" /> <!-- Simplified AS -->
+                                    <path id="country-AU" class="country-path" d="M820,380 L920,380 L940,450 L840,460 Z" /> <!-- Simplified AU -->
+                                    
+                                    <!-- Detailed South Korea Point -->
+                                    <circle id="country-KR" class="country-path" cx="845" cy="180" r="5" stroke-width="2" />
                                 </g>
                                 <!-- Labels -->
-                                <text x="180" y="180" fill="currentColor" class="text-[8px] font-black opacity-20 pointer-events-none">NORTH AMERICA</text>
-                                <text x="700" y="180" fill="currentColor" class="text-[8px] font-black opacity-20 pointer-events-none">ASIA</text>
-                                <text x="830" y="170" fill="#137fec" class="text-[8px] font-black animate-pulse">KOREA</text>
+                                <text x="180" y="180" fill="white" class="text-[10px] font-black opacity-10 pointer-events-none uppercase italic">The Americas</text>
+                                <text x="500" y="320" fill="white" class="text-[10px] font-black opacity-10 pointer-events-none uppercase italic">Africa</text>
+                                <text x="750" y="220" fill="white" class="text-[10px] font-black opacity-10 pointer-events-none uppercase italic">Eurasia</text>
+                                <text x="855" y="185" fill="#137fec" class="text-[10px] font-black animate-pulse">KOREA</text>
                             </svg>
                             
                             <!-- Detailed Tooltip/Info Overlay -->
