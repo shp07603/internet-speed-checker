@@ -74,7 +74,23 @@ const translations = {
         tip_jitter: "〰️ 연결이 불안정하여 지터가 높습니다.",
         tip_ping: "⚡ 반응속도가 느려 게이밍에 부적합할 수 있습니다.",
         tip_dl_low: "⬇️ 다운로드 속도가 낮습니다.",
-        tip_perfect: "✅ 완벽합니다! 현재 네트워크 상태가 매우 좋습니다."
+        tip_perfect: "✅ 완벽합니다! 현재 네트워크 상태가 매우 좋습니다.",
+        
+        // Map Related
+        map_live_update: "<span class=\"text-primary\">Live Update:</span> 측정 데이터가 전 세계 기상 서버로 전송됩니다.",
+        map_node_detecting: "감지 중...",
+        map_wait: "대기 중...",
+        map_forecast_label: "기상 예보",
+        map_forecast_desc: "당신의 대역폭이 맑은 하늘을 유지하고 있습니다.",
+        map_status_sunny: "맑음",
+        map_status_cloudy: "흐림",
+        map_status_stormy: "뇌우",
+        map_signal_ultra: "초고속",
+        map_signal_stable: "안정적",
+        map_signal_unstable: "불안정",
+        map_desc_sunny: "대역폭이 매우 넓고 지연시간이 거의 없는 맑은 상태입니다.",
+        map_desc_cloudy: "데이터 흐름이 안정적이지만 다소 혼잡할 수 있는 상태입니다.",
+        map_desc_stormy: "데이터 패킷 손실이 우려되는 강력한 노이즈가 발생하고 있습니다."
     },
     en: {
         nav_about: "About",
@@ -147,7 +163,23 @@ const translations = {
         tip_jitter: "〰️ High jitter detected, connection unstable.",
         tip_ping: "⚡ Slow response time, may be unsuitable for gaming.",
         tip_dl_low: "⬇️ Download speed is low.",
-        tip_perfect: "✅ Perfect! Your network condition is excellent."
+        tip_perfect: "✅ Perfect! Your network condition is excellent.",
+        
+        // Map Related
+        map_live_update: "<span class=\"text-primary\">Live Update:</span> Measurement data sent to global weather nodes.",
+        map_node_detecting: "Detecting...",
+        map_wait: "Waiting...",
+        map_forecast_label: "Forecast",
+        map_forecast_desc: "Your bandwidth is keeping the skies clear.",
+        map_status_sunny: "Sunny",
+        map_status_cloudy: "Cloudy",
+        map_status_stormy: "Stormy",
+        map_signal_ultra: "Ultra Fast",
+        map_signal_stable: "Stable",
+        map_signal_unstable: "Unstable",
+        map_desc_sunny: "Skies are clear with high bandwidth and ultra-low latency.",
+        map_desc_cloudy: "Data flow is stable but showing signs of minor congestion.",
+        map_desc_stormy: "Severe noise detected. Potential for packet loss and instability."
     }
 };
 
@@ -194,8 +226,6 @@ function initGeoChart() {
             ['KR', 50], ['US', 50], ['JP', 50], ['GB', 50], ['DE', 50]
         ]);
         geoChart = new google.visualization.GeoChart($('geochart_div'));
-        
-        // Add Selection Event
         google.visualization.events.addListener(geoChart, 'select', () => {
             const selection = geoChart.getSelection();
             if (selection.length > 0) {
@@ -205,7 +235,6 @@ function initGeoChart() {
                 showCountryInfo(countryCode, score);
             }
         });
-
         geoChart.draw(geoData, geoOptions);
     });
 }
@@ -217,46 +246,36 @@ function showCountryInfo(code, score) {
     const signalEl = $('popupSignal');
     const descEl = $('popupDesc');
     const iconEl = $('countryPopupIcon');
-
-    // Region Names Mapping (Simplified)
     const names = { 'KR': 'South Korea', 'US': 'United States', 'JP': 'Japan', 'GB': 'United Kingdom', 'DE': 'Germany' };
     nameEl.textContent = names[code] || code;
 
     if (score >= 80) {
-        statusEl.textContent = 'Sunny';
+        statusEl.textContent = i18n('map_status_sunny');
         statusEl.className = 'text-emerald-500 font-black uppercase';
-        signalEl.textContent = 'Ultra Fast';
-        descEl.textContent = '대역폭이 매우 넓고 지연시간이 거의 없는 맑은 상태입니다.';
+        signalEl.textContent = i18n('map_signal_ultra');
+        descEl.textContent = i18n('map_desc_sunny');
         iconEl.innerHTML = '<span class="material-symbols-outlined text-5xl">wb_sunny</span>';
     } else if (score >= 40) {
-        statusEl.textContent = 'Cloudy';
+        statusEl.textContent = i18n('map_status_cloudy');
         statusEl.className = 'text-blue-500 font-black uppercase';
-        signalEl.textContent = 'Stable';
-        descEl.textContent = '데이터 흐름이 안정적이지만 다소 혼잡할 수 있는 상태입니다.';
+        signalEl.textContent = i18n('map_signal_stable');
+        descEl.textContent = i18n('map_desc_cloudy');
         iconEl.innerHTML = '<span class="material-symbols-outlined text-5xl">cloud</span>';
     } else {
-        statusEl.textContent = 'Stormy';
+        statusEl.textContent = i18n('map_status_stormy');
         statusEl.className = 'text-red-500 font-black uppercase';
-        signalEl.textContent = 'Unstable';
-        descEl.textContent = '데이터 패킷 손실이 우려되는 강력한 노이즈가 발생하고 있습니다.';
+        signalEl.textContent = i18n('map_signal_unstable');
+        descEl.textContent = i18n('map_desc_stormy');
         iconEl.innerHTML = '<span class="material-symbols-outlined text-5xl">thunderstorm</span>';
     }
-
     overlay.classList.remove('hidden');
-    setTimeout(() => {
-        overlay.classList.remove('opacity-0');
-        $('countryBox').classList.remove('scale-90');
-    }, 10);
+    setTimeout(() => { overlay.classList.remove('opacity-0'); $('countryBox').classList.remove('scale-90'); }, 10);
 }
 
 function closeCountryModal() {
-    const overlay = $('countryModalOverlay');
-    overlay.classList.add('opacity-0');
+    const overlay = $('countryModalOverlay'); overlay.classList.add('opacity-0');
     $('countryBox').classList.add('scale-90');
-    setTimeout(() => {
-        overlay.classList.add('hidden');
-        if (geoChart) geoChart.setSelection([]); // Reset selection on map
-    }, 300);
+    setTimeout(() => { overlay.classList.add('hidden'); if (geoChart) geoChart.setSelection([]); }, 300);
 }
 
 function updateWeather(grade) {
@@ -265,22 +284,20 @@ function updateWeather(grade) {
     const iconEl = $('weatherIcon');
     const statusText = $('weatherStatusText');
     const mapCondition = $('map-condition');
-    
     if (infoBox) infoBox.classList.remove('hidden');
-    let score = 50, label = 'Sunny & Fast', icon = 'wb_sunny', condColor = 'text-emerald-500';
+    let score = 50, label = i18n('map_status_cloudy'), icon = 'cloud', condColor = 'text-blue-500';
     
     if (grade === 'A' || grade === 'B') {
-        score = 100; label = grade === 'A' ? 'Perfect Skies' : 'Sunny & Clear'; icon = 'wb_sunny'; condColor = 'text-emerald-500';
+        score = 100; label = i18n('map_status_sunny'); icon = 'wb_sunny'; condColor = 'text-emerald-500';
     } else if (grade === 'C') {
-        score = 50; label = 'Cloudy Connection'; icon = 'cloud'; condColor = 'text-blue-500';
+        score = 50; label = i18n('map_status_cloudy'); icon = 'cloud'; condColor = 'text-blue-500';
     } else {
-        score = 0; label = 'Severe Storm Warning'; icon = 'thunderstorm'; condColor = 'text-red-500';
+        score = 0; label = i18n('map_status_stormy'); icon = 'thunderstorm'; condColor = 'text-red-500';
     }
     
     if (iconEl) iconEl.innerHTML = `<span class="material-symbols-outlined text-4xl">${icon}</span>`;
     if (statusText) statusText.textContent = label;
     if (mapCondition) { mapCondition.textContent = label; mapCondition.className = 'text-[11px] font-black uppercase ' + condColor; }
-
     let found = false;
     for (let i = 0; i < geoData.getNumberOfRows(); i++) {
         if (geoData.getValue(i, 0) === currentCountryCode) { geoData.setValue(i, 1, score); found = true; break; }
@@ -349,7 +366,6 @@ function saveHistory(dl, ul, ping, grade) {
 
 function clearHistory() { if(confirm(i18n('js_confirm_clear'))) { localStorage.removeItem('netScoreHistory'); loadHistory(); } }
 
-// ── UI Control ──
 function setStatus(msg, state) {
   $('statusText').textContent = msg;
   const dot = $('statusDot');
@@ -385,26 +401,15 @@ function setGauge(val, max, label) {
   $('gaugeLabel').textContent = label;
 }
 
-// ── Effects & Modal ──
 let animFrame;
-function stopEffect() {
-  if (animFrame) cancelAnimationFrame(animFrame);
-  const cvs = $('effectCanvas');
-  const ctx = cvs.getContext('2d');
-  ctx.clearRect(0,0,cvs.width,cvs.height);
-}
+function stopEffect() { if (animFrame) cancelAnimationFrame(animFrame); const cvs = $('effectCanvas'); const ctx = cvs.getContext('2d'); ctx.clearRect(0,0,cvs.width,cvs.height); }
 function playConfetti() {
   stopEffect();
   const cvs = $('effectCanvas'); const ctx = cvs.getContext('2d');
   cvs.width = window.innerWidth; cvs.height = window.innerHeight;
   const particles = []; const colors = ['#137fec','#ff6b35','#10b981','#f59e0b','#ffffff'];
   for(let i=0; i<150; i++) { particles.push({ x: cvs.width/2, y: cvs.height/2, vx: (Math.random()-0.5)*20, vy: (Math.random()-0.5)*20-5, c: colors[Math.floor(Math.random()*colors.length)], s: Math.random()*8+4, r: Math.random()*360, dr: (Math.random()-0.5)*10 }); }
-  function loop() {
-    ctx.clearRect(0,0,cvs.width,cvs.height);
-    particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.3; p.r += p.dr; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r * Math.PI/180); ctx.fillStyle = p.c; ctx.fillRect(-p.s/2, -p.s/2, p.s, p.s); ctx.restore(); });
-    particles.forEach(p => { if(p.y > cvs.height) { p.y = -20; p.x = Math.random()*cvs.width; p.vy = Math.random()*5+2; } });
-    animFrame = requestAnimationFrame(loop);
-  }
+  function loop() { ctx.clearRect(0,0,cvs.width,cvs.height); particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.3; p.r += p.dr; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r * Math.PI/180); ctx.fillStyle = p.c; ctx.fillRect(-p.s/2, -p.s/2, p.s, p.s); ctx.restore(); }); particles.forEach(p => { if(p.y > cvs.height) { p.y = -20; p.x = Math.random()*cvs.width; p.vy = Math.random()*5+2; } }); animFrame = requestAnimationFrame(loop); }
   loop();
 }
 function playRain() {
@@ -413,90 +418,28 @@ function playRain() {
   cvs.width = window.innerWidth; cvs.height = window.innerHeight;
   const drops = [];
   for(let i=0; i<100; i++) { drops.push({ x: Math.random()*cvs.width, y: Math.random()*cvs.height, l: Math.random()*20+10, v: Math.random()*10+15 }); }
-  function loop() {
-    ctx.fillStyle = 'rgba(10, 15, 22, 0.1)'; ctx.fillRect(0,0,cvs.width,cvs.height);
-    ctx.strokeStyle = 'rgba(100,120,150,0.5)'; ctx.lineWidth = 2; ctx.beginPath();
-    drops.forEach(d => { ctx.moveTo(d.x, d.y); ctx.lineTo(d.x, d.y+d.l); d.y += d.v; if(d.y > cvs.height) { d.y = -d.l; d.x = Math.random()*cvs.width; } });
-    ctx.stroke(); animFrame = requestAnimationFrame(loop);
-  }
+  function loop() { ctx.fillStyle = 'rgba(10, 15, 22, 0.1)'; ctx.fillRect(0,0,cvs.width,cvs.height); ctx.strokeStyle = 'rgba(100,120,150,0.5)'; ctx.lineWidth = 2; ctx.beginPath(); drops.forEach(d => { ctx.moveTo(d.x, d.y); ctx.lineTo(d.x, d.y+d.l); d.y += d.v; if(d.y > cvs.height) { d.y = -d.l; d.x = Math.random()*cvs.width; } }); ctx.stroke(); animFrame = requestAnimationFrame(loop); }
   loop();
 }
-function showModal(grade) {
-  const overlay = $('modalOverlay'); overlay.classList.remove('hidden');
-  setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-  $('resultBox').classList.remove('scale-95');
-  if (grade === 'A' || grade === 'B') playConfetti(); else if (grade === 'D' || grade === 'F') playRain();
-}
-function closeModal() {
-  const overlay = $('modalOverlay'); overlay.classList.add('opacity-0');
-  $('resultBox').classList.add('scale-95');
-  setTimeout(() => { overlay.classList.add('hidden'); stopEffect(); }, 300);
-}
+function showModal(grade) { const overlay = $('modalOverlay'); overlay.classList.remove('hidden'); setTimeout(() => overlay.classList.remove('opacity-0'), 10); $('resultBox').classList.remove('scale-95'); if (grade === 'A' || grade === 'B') playConfetti(); else if (grade === 'D' || grade === 'F') playRain(); }
+function closeModal() { const overlay = $('modalOverlay'); overlay.classList.add('opacity-0'); $('resultBox').classList.add('scale-95'); setTimeout(() => { overlay.classList.add('hidden'); stopEffect(); }, 300); }
 
-// ── Measurement Logic ──
 const TARGETS = ['https://www.google.com/generate_204','https://one.one.one.one/cdn-cgi/trace','https://www.cloudflare.com/cdn-cgi/trace','https://httpbin.org/get','https://www.bing.com/favicon.ico'];
-async function onePing(url) {
-  try {
-    const ac = new AbortController(); const t = setTimeout(() => ac.abort(), 4000);
-    const t0 = performance.now(); await fetch(url + '?_=' + Date.now(), { mode:'no-cors', cache:'no-store', signal:ac.signal });
-    clearTimeout(t); return Math.round(performance.now() - t0);
-  } catch { return null; }
-}
+async function onePing(url) { try { const ac = new AbortController(); const t = setTimeout(() => ac.abort(), 4000); const t0 = performance.now(); await fetch(url + '?_=' + Date.now(), { mode:'no-cors', cache:'no-store', signal:ac.signal }); clearTimeout(t); return Math.round(performance.now() - t0); } catch { return null; } }
 async function runPing() {
   const N = 15; setStatus(i18n('js_status_ping'), 'running'); setCard('ping', '...', 'active');
   const ok = []; let lost = 0;
-  for (let i = 0; i < N; i++) {
-    const ms = await onePing(TARGETS[i % TARGETS.length]);
-    if (!ms || ms > 3000) { lost++; } else { ok.push(ms); setCard('ping', Math.round(ok.reduce((a,b)=>a+b,0)/ok.length), 'active'); }
-    setProgress('PING', (i+1)/N*30); await sleep(100);
-  }
+  for (let i = 0; i < N; i++) { const ms = await onePing(TARGETS[i % TARGETS.length]); if (!ms || ms > 3000) { lost++; } else { ok.push(ms); setCard('ping', Math.round(ok.reduce((a,b)=>a+b,0)/ok.length), 'active'); } setProgress('PING', (i+1)/N*30); await sleep(100); }
   setCard('ping', ok.length ? Math.round(ok.reduce((a,b)=>a+b,0)/ok.length) : i18n('js_failed'), '');
   return { ping: ok.length ? Math.round(ok.reduce((a,b)=>a+b,0)/ok.length) : null, jitter: ok.length > 1 ? Math.round(ok.slice(1).reduce((s,v,i)=>s+Math.abs(v-ok[i]),0)/(ok.length-1)) : 0, loss: Math.round(lost/N*100) };
 }
-async function dlCF(bytes) {
-  const ac = new AbortController(); setTimeout(() => ac.abort(), 15000);
-  const t0 = performance.now(); const res = await fetch('https://speed.cloudflare.com/__down?bytes='+bytes+'&t='+Date.now(), { cache:'no-store', signal:ac.signal });
-  const buf = await res.arrayBuffer(); return buf.byteLength * 8 / ((performance.now()-t0)/1000) / 1e6;
-}
-async function runDownload() {
-  setStatus(i18n('js_status_dl'), 'running'); setCard('dl', '...', 'active');
-  const speeds = []; const sizes = [1e6, 5e6, 10e6];
-  for (let i = 0; i < sizes.length; i++) {
-    try { const mbps = await dlCF(sizes[i]); if (mbps > 0 && mbps < 10000) { speeds.push(mbps); setGauge(mbps, 200, 'MBPS'); setCard('dl', mbps.toFixed(1), 'active'); } } catch(e) {}
-    setProgress('DOWNLOAD', 30+(i+1)/3*35);
-  }
-  setCard('dl', speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(1) : i18n('js_failed'), '');
-  return speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(2) : null;
-}
-async function runUpload() {
-  setStatus(i18n('js_status_ul'), 'running'); setCard('ul', '...', 'active');
-  const speeds = []; const SZ = 1e6; const body = 'a'.repeat(SZ); 
-  for (let i=0;i<3;i++) {
-    try {
-      const ac = new AbortController(); setTimeout(()=>ac.abort(),15000);
-      const t0 = performance.now(); await fetch('https://speed.cloudflare.com/__up?t='+Date.now(), { method:'POST', body: body, mode: 'no-cors', cache:'no-store', signal:ac.signal });
-      const mbps = SZ*8/((performance.now()-t0)/1000)/1e6; if (mbps>0&&mbps<10000) { speeds.push(mbps); setGauge(mbps, 100, 'MBPS'); setCard('ul',mbps.toFixed(1), 'active'); }
-    } catch(e) {}
-    setProgress('UPLOAD', 65+(i+1)/3*35); await sleep(200);
-  }
-  setCard('ul', speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(1) : i18n('js_failed'), '');
-  return speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(2) : null;
-}
+async function dlCF(bytes) { const ac = new AbortController(); setTimeout(() => ac.abort(), 15000); const t0 = performance.now(); const res = await fetch('https://speed.cloudflare.com/__down?bytes='+bytes+'&t='+Date.now(), { cache:'no-store', signal:ac.signal }); const buf = await res.arrayBuffer(); return buf.byteLength * 8 / ((performance.now()-t0)/1000) / 1e6; }
+async function runDownload() { setStatus(i18n('js_status_dl'), 'running'); setCard('dl', '...', 'active'); const speeds = []; const sizes = [1e6, 5e6, 10e6]; for (let i = 0; i < sizes.length; i++) { try { const mbps = await dlCF(sizes[i]); if (mbps > 0 && mbps < 10000) { speeds.push(mbps); setGauge(mbps, 200, 'MBPS'); setCard('dl', mbps.toFixed(1), 'active'); } } catch(e) {} setProgress('DOWNLOAD', 30+(i+1)/3*35); } setCard('dl', speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(1) : i18n('js_failed'), ''); return speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(2) : null; }
+async function runUpload() { setStatus(i18n('js_status_ul'), 'running'); setCard('ul', '...', 'active'); const speeds = []; const SZ = 1e6; const body = 'a'.repeat(SZ); for (let i=0;i<3;i++) { try { const ac = new AbortController(); setTimeout(()=>ac.abort(),15000); const t0 = performance.now(); await fetch('https://speed.cloudflare.com/__up?t='+Date.now(), { method:'POST', body: body, mode: 'no-cors', cache:'no-store', signal:ac.signal }); const mbps = SZ*8/((performance.now()-t0)/1000)/1e6; if (mbps>0&&mbps<10000) { speeds.push(mbps); setGauge(mbps, 100, 'MBPS'); setCard('ul',mbps.toFixed(1), 'active'); } } catch(e) {} setProgress('UPLOAD', 65+(i+1)/3*35); await sleep(200); } setCard('ul', speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(1) : i18n('js_failed'), ''); return speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(2) : null; }
 
-function stability(ping, jitter, loss) {
-  let s = 100; if (ping>300) s-=30; else if(ping>150) s-=15; else if(ping>80) s-=5;
-  if (jitter>50) s-=25; else if(jitter>20) s-=12; else if(jitter>10) s-=5;
-  s -= loss*3; return Math.max(0, Math.min(100, s));
-}
-function grade(dl, ping, stab) {
-  let p = 0; const d = dl||0;
-  if(d>=100) p+=40; else if(d>=50) p+=32; else if(d>=25) p+=24; else if(d>=10) p+=16; else p+=8;
-  if(ping<=20) p+=30; else if(ping<=50) p+=24; else if(ping<=100) p+=18; else if(ping<=200) p+=12; else p+=4;
-  p += stab*0.3; return p>=85?'A':p>=70?'B':p>=50?'C':p>=30?'D':'F';
-}
-function tips(dl, ul, ping, jitter, loss) {
-  const t = []; if (loss>5) t.push(i18n('tip_loss')); if (jitter>30) t.push(i18n('tip_jitter')); if (ping>100) t.push(i18n('tip_ping')); if (dl&&dl<10) t.push(i18n('tip_dl_low')); if (!t.length) t.push(i18n('tip_perfect')); return t;
-}
+function stability(ping, jitter, loss) { let s = 100; if (ping>300) s-=30; else if(ping>150) s-=15; else if(ping>80) s-=5; if (jitter>50) s-=25; else if(jitter>20) s-=12; else if(jitter>10) s-=5; s -= loss*3; return Math.max(0, Math.min(100, s)); }
+function grade(dl, ping, stab) { let p = 0; const d = dl||0; if(d>=100) p+=40; else if(d>=50) p+=32; else if(d>=25) p+=24; else if(d>=10) p+=16; else p+=8; if(ping<=20) p+=30; else if(ping<=50) p+=24; else if(ping<=100) p+=18; else if(ping<=200) p+=12; else p+=4; p += stab*0.3; return p>=85?'A':p>=70?'B':p>=50?'C':p>=30?'D':'F'; }
+function tips(dl, ul, ping, jitter, loss) { const t = []; if (loss>5) t.push(i18n('tip_loss')); if (jitter>30) t.push(i18n('tip_jitter')); if (ping>100) t.push(i18n('tip_ping')); if (dl&&dl<10) t.push(i18n('tip_dl_low')); if (!t.length) t.push(i18n('tip_perfect')); return t; }
 
 let running = false;
 async function startTest() {
@@ -517,6 +460,4 @@ async function startTest() {
   running = false; $('startBtn').disabled = false;
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-    setLanguage(currentLang); getIP(); loadHistory(); initGeoChart();
-});
+window.addEventListener('DOMContentLoaded', () => { setLanguage(currentLang); getIP(); loadHistory(); initGeoChart(); });

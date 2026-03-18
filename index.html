@@ -346,7 +346,7 @@
                                 <span class="material-symbols-outlined text-primary text-4xl animate-spin-slow">language</span>
                                 <h2 class="text-3xl font-black tracking-tighter uppercase italic">Global Weather Node</h2>
                             </div>
-                            <p class="text-slate-400 text-sm font-bold tracking-widest uppercase">
+                            <p class="text-slate-400 text-sm font-bold tracking-widest uppercase" data-i18n="map_live_update">
                                 <span class="text-primary">Live Update:</span> 측정 데이터가 전 세계 기상 서버로 전송됩니다.
                             </p>
                         </div>
@@ -364,11 +364,11 @@
                                 <div class="space-y-1.5 min-w-[120px]">
                                     <div class="flex justify-between gap-4 border-b border-white/5 pb-1">
                                         <span class="text-[9px] text-slate-500 font-bold uppercase">Node</span>
-                                        <span class="text-[9px] text-white font-black" id="map-loc-name">Detecting...</span>
+                                        <span class="text-[9px] text-white font-black" id="map-loc-name" data-i18n="map_node_detecting">감지 중...</span>
                                     </div>
                                     <div class="flex justify-between gap-4">
                                         <span class="text-[9px] text-slate-500 font-bold uppercase">State</span>
-                                        <span class="text-[9px] text-emerald-500 font-black uppercase" id="map-condition">Wait...</span>
+                                        <span class="text-[9px] text-emerald-500 font-black uppercase" id="map-condition" data-i18n="map_wait">대기 중...</span>
                                     </div>
                                 </div>
                             </div>
@@ -380,7 +380,7 @@
                                         <span class="material-symbols-outlined text-2xl">wb_sunny</span>
                                     </div>
                                     <div class="space-y-0.5">
-                                        <p class="text-[8px] font-black text-primary uppercase tracking-[0.2em]">Forecast</p>
+                                        <p class="text-[8px] font-black text-primary uppercase tracking-[0.2em]" data-i18n="map_forecast_label">기상 예보</p>
                                         <p class="text-sm font-black italic tracking-tighter" id="weatherStatusText">Sunny</p>
                                     </div>
                                 </div>
@@ -525,7 +525,7 @@
                         <span class="text-white font-black" id="popupSignal">Stable</span>
                     </div>
                 </div>
-                <p class="text-[12px] text-slate-400 leading-relaxed font-medium" id="popupDesc">
+                <p class="text-[12px] text-slate-400 leading-relaxed font-medium" id="popupDesc" data-i18n="map_desc_cloudy">
                     이 지역은 현재 쾌적한 네트워크 흐름을 보이고 있습니다.
                 </p>
             </div>
