@@ -132,6 +132,42 @@
             min-height: 100dvh;
             scroll-behavior: smooth;
         }
+        .weather-map-section {
+            background: linear-gradient(180deg, transparent, rgba(19, 127, 236, 0.05));
+            border-radius: 4rem;
+            padding: 4rem 2rem;
+            border: 1px solid rgba(19, 127, 236, 0.1);
+            margin-top: 4rem;
+        }
+        .world-map-svg {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            filter: drop-shadow(0 0 30px rgba(19, 127, 236, 0.15));
+        }
+        .country {
+            fill: #1e293b;
+            stroke: #334155;
+            stroke-width: 0.5;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .country.active-sunny { fill: #10b981; filter: drop-shadow(0 0 12px #10b981); }
+        .country.active-cloudy { fill: #137fec; filter: drop-shadow(0 0 12px #137fec); }
+        .country.active-stormy { fill: #ef4444; filter: drop-shadow(0 0 12px #ef4444); animation: lightning-flash 1.5s infinite; }
+        
+        @keyframes lightning-flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; filter: brightness(1.5) drop-shadow(0 0 20px #ef4444); }
+        }
+
+        .weather-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            padding: 1.5rem;
+        }
+
         details summary::-webkit-details-marker { display: none; }
     </style>
 </head>
@@ -277,6 +313,61 @@
                         <div id="progressFill" class="h-full bg-primary transition-all duration-300" style="width: 0%"></div>
                     </div>
                 </div>
+
+                <!-- Global Network Weather Map -->
+                <section class="weather-map-section w-full">
+                    <div class="flex flex-col md:flex-row gap-12 items-center">
+                        <div class="flex-1 space-y-6">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary animate-pulse">public</span>
+                                <h2 class="text-2xl font-black tracking-tight">Global Network Weather</h2>
+                            </div>
+                            <p class="text-slate-500 text-sm font-medium leading-relaxed">
+                                전 세계 인터넷 기상도를 확인하세요. 당신의 측정 결과가 우리나라의 날씨를 결정합니다! 
+                                <span class="text-primary font-bold">맑음(Sunny)</span> 상태를 유지해 보세요.
+                            </p>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="weather-card flex items-center gap-4">
+                                    <span class="material-symbols-outlined text-emerald-500">wb_sunny</span>
+                                    <div>
+                                        <p class="text-[10px] font-black text-slate-400 uppercase">Clear Sky</p>
+                                        <p class="text-sm font-bold">South Korea</p>
+                                    </div>
+                                </div>
+                                <div class="weather-card flex items-center gap-4">
+                                    <span class="material-symbols-outlined text-primary">cloud</span>
+                                    <div>
+                                        <p class="text-[10px] font-black text-slate-400 uppercase">Cloudy</p>
+                                        <p class="text-sm font-bold">United States</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 w-full relative group">
+                            <!-- Simple SVG World Map (Simplified Paths) -->
+                            <svg viewBox="0 0 1000 500" class="world-map-svg">
+                                <!-- Background Dots/Grid could go here -->
+                                <path id="country-KR" class="country" d="M840,160 L850,160 L850,170 L840,170 Z" /> <!-- Korea Placeholder -->
+                                <path id="map-path" class="country" d="M150,150 Q200,100 300,150 T500,150 T800,200 L850,300 L700,400 L400,350 L200,400 Z" opacity="0.5" /> 
+                                <!-- Detailed SVG path should be added here for a better look -->
+                                <text x="830" y="150" fill="currentColor" class="text-[10px] font-bold opacity-50">KOREA</text>
+                            </svg>
+                            
+                            <!-- Floating Weather Status -->
+                            <div class="absolute bottom-4 left-4 flex items-center gap-3 bg-white/10 backdrop-blur-xl p-4 rounded-2xl border border-white/10 hidden" id="localWeatherInfo">
+                                <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary" id="weatherIcon">
+                                    <span class="material-symbols-outlined">wb_sunny</span>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Your Weather</p>
+                                    <p class="text-sm font-bold" id="weatherStatusText">Sunny & Fast</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
 
             <!-- AdSense Content -->

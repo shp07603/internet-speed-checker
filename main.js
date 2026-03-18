@@ -197,6 +197,8 @@ function toggleLanguage() {
 
 // ── History & IP ──
 let currentIP = 'Unknown';
+let currentCountryCode = 'KR'; // Default
+
 async function getIP() {
   try {
     const res = await fetch('https://api.ipify.org?format=json');
@@ -207,6 +209,12 @@ async function getIP() {
     const infoRes = await fetch('https://ipapi.co/json/');
     const infoData = await infoRes.json();
     if (infoData.org) $('network-name').textContent = infoData.org;
+    if (infoData.country) {
+        currentCountryCode = infoData.country;
+        // Highlight local country on map if it exists
+        const countryEl = $('country-' + currentCountryCode);
+        if (countryEl) countryEl.classList.add('opacity-100', 'stroke-primary', 'stroke-[2px]');
+    }
     if (infoData.city && infoData.country_name) {
         const locEl = $('server-location');
         if (locEl) locEl.textContent = infoData.city + ', ' + infoData.country_name;
@@ -216,6 +224,47 @@ async function getIP() {
       $('network-provider').textContent = i18n('js_network_connected');
       $('network-name').textContent = i18n('js_analyzing_isp');
   }
+}
+
+function updateWeather(grade) {
+    const countryEl = $('country-' + currentCountryCode) || $('country-KR');
+    const infoBox = $('localWeatherInfo');
+    const iconEl = $('weatherIcon');
+    const statusText = $('weatherStatusText');
+    
+    if (!infoBox) return;
+    infoBox.classList.remove('hidden');
+    
+    // Reset classes
+    countryEl.classList.remove('active-sunny', 'active-cloudy', 'active-stormy');
+    
+    let state = 'sunny';
+    let label = 'Sunny & Fast';
+    let icon = 'wb_sunny';
+    
+    if (grade === 'A' || grade === 'B') {
+        state = 'sunny';
+        countryEl.classList.add('active-sunny');
+        label = grade === 'A' ? 'Perfect Skies' : 'Sunny & Clear';
+        icon = 'wb_sunny';
+    } else if (grade === 'C') {
+        state = 'cloudy';
+        countryEl.classList.add('active-cloudy');
+        label = 'Cloudy Connection';
+        icon = 'cloud';
+    } else {
+        state = 'stormy';
+        countryEl.classList.add('active-stormy');
+        label = 'Severe Storm Warning';
+        icon = 'thunderstorm';
+    }
+    
+    iconEl.innerHTML = `<span class="material-symbols-outlined">${icon}</span>`;
+    statusText.textContent = label;
+    
+    // Optional: Simulation for other countries to feel "global"
+    const usEl = $('country-US');
+    if (usEl) usEl.classList.add('active-cloudy');
 }
 
 function loadHistory() {
@@ -546,6 +595,7 @@ async function startTest() {
   // Modal & History
   showModal(g);
   saveHistory(dl, ul, ping, g);
+  updateWeather(g); // Update the Global Weather Map
   
   setGauge(dl || 0, 200, 'GRADE');
   $('gaugeVal').textContent = g;
