@@ -168,6 +168,25 @@
             padding: 1.5rem;
         }
 
+        /* --- Improved Background Circles & Pulse --- */
+        .pulse-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(19, 127, 236, 0.2);
+            background: radial-gradient(circle, rgba(19, 127, 236, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .pulse-1 { width: 24rem; height: 24rem; animation: pulse-out 4s infinite linear; }
+        .pulse-2 { width: 32rem; height: 32rem; animation: pulse-out 4s infinite linear 2s; }
+        .pulse-3 { width: 40rem; height: 40rem; opacity: 0.1; }
+
+        @keyframes pulse-out {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+        /* ------------------------------------------- */
+
         details summary::-webkit-details-marker { display: none; }
     </style>
 </head>
@@ -239,8 +258,9 @@
                         </div>
                     </button>
                     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div class="w-[24rem] h-[24rem] rounded-full border border-slate-200 dark:border-slate-800/50"></div>
-                        <div class="w-[30rem] h-[30rem] rounded-full border border-slate-200 dark:border-slate-800/30"></div>
+                        <div class="pulse-circle pulse-1"></div>
+                        <div class="pulse-circle pulse-2"></div>
+                        <div class="pulse-circle pulse-3 border-slate-200 dark:border-slate-800/30"></div>
                     </div>
                 </div>
 
