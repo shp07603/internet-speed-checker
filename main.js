@@ -50,8 +50,6 @@ const translations = {
         footer_updated: "최종 업데이트: 2026년 2월",
         modal_final_grade: "Final Grade",
         modal_close: "결과 닫기",
-        
-        // JS Dynamic Strings
         js_ip_prefix: "접속 IP: ",
         js_network_connected: "네트워크 연결됨",
         js_analyzing_isp: "인터넷 서비스 제공업체 분석 중",
@@ -62,8 +60,6 @@ const translations = {
         js_status_done: "측정 완료",
         js_failed: "실패",
         js_analyzing: "분석 중",
-        
-        // Grade Titles & Descs
         grade_a_title: "🚀 우주급 속도",
         grade_a_desc: "이더넷 케이블이 금으로 되어있나요? 판교 서버실급 속도입니다.",
         grade_b_title: "⚡ 한국인 평균",
@@ -74,8 +70,6 @@ const translations = {
         grade_d_desc: "답답하시죠? 인내심을 기르거나 통신사에 전화해서 따지세요.",
         grade_f_title: "🗿 빗살무늬 토기",
         grade_f_desc: "혹시 신호를 연기로 보내고 계신가요? 비둘기가 더 빠를 것 같습니다.",
-        
-        // Tips
         tip_loss: "💨 데이터 손실이 감지되었습니다.",
         tip_jitter: "〰️ 연결이 불안정하여 지터가 높습니다.",
         tip_ping: "⚡ 반응속도가 느려 게이밍에 부적합할 수 있습니다.",
@@ -129,8 +123,6 @@ const translations = {
         footer_updated: "Last Updated: February 2026",
         modal_final_grade: "Final Grade",
         modal_close: "Close Result",
-        
-        // JS Dynamic Strings
         js_ip_prefix: "IP: ",
         js_network_connected: "Network Connected",
         js_analyzing_isp: "Analyzing ISP...",
@@ -141,8 +133,6 @@ const translations = {
         js_status_done: "Test Complete",
         js_failed: "Failed",
         js_analyzing: "Analyzing",
-        
-        // Grade Titles & Descs
         grade_a_title: "🚀 Galactic Speed",
         grade_a_desc: "Is your Ethernet cable made of gold? This is server-grade speed.",
         grade_b_title: "⚡ Very Fast",
@@ -153,8 +143,6 @@ const translations = {
         grade_d_desc: "Frustrating, right? Grow some patience or call your ISP to complain.",
         grade_f_title: "🗿 Ancient Artifact",
         grade_f_desc: "Are you sending signals via smoke? A carrier pigeon might be faster.",
-        
-        // Tips
         tip_loss: "💨 Data loss detected.",
         tip_jitter: "〰️ High jitter detected, connection unstable.",
         tip_ping: "⚡ Slow response time, may be unsuitable for gaming.",
@@ -164,58 +152,94 @@ const translations = {
 };
 
 let currentLang = localStorage.getItem('lang') || 'en';
+let currentIP = 'Unknown';
+let currentCountryCode = 'KR';
 
-function i18n(key) {
-    return translations[currentLang][key] || key;
-}
+function i18n(key) { return translations[currentLang][key] || key; }
 
 function setLanguage(lang) {
     currentLang = lang;
     localStorage.setItem('lang', lang);
     document.documentElement.lang = lang;
     $('langText').textContent = lang === 'ko' ? 'EN' : 'KO';
-    
-    // Update elements with data-i18n
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         el.innerHTML = i18n(key);
     });
-
-    // Update footer links
-    const termsLink = document.querySelector('a[href^="terms"]');
-    const privacyLink = document.querySelector('a[href^="privacy"]');
-    if (termsLink) termsLink.href = lang === 'ko' ? 'terms.html' : 'terms-en.html';
-    if (privacyLink) privacyLink.href = lang === 'ko' ? 'privacy.html' : 'privacy-en.html';
-    
-    // Refresh history to update units/text if needed
     loadHistory();
 }
 
-function toggleLanguage() {
-    setLanguage(currentLang === 'ko' ? 'en' : 'ko');
+function toggleLanguage() { setLanguage(currentLang === 'ko' ? 'en' : 'ko'); }
+
+// ── Google GeoChart ──
+let geoChart;
+let geoData;
+let geoOptions = {
+    backgroundColor: 'transparent',
+    datalessRegionColor: '#1e293b',
+    defaultColor: '#334155',
+    colorAxis: { colors: ['#ef4444', '#137fec', '#10b981'] },
+    legend: 'none',
+    tooltip: { trigger: 'none' },
+    keepAspectRatio: true,
+    width: '100%',
+    height: '100%'
+};
+
+function initGeoChart() {
+    google.charts.load('current', { 'packages': ['geochart'] });
+    google.charts.setOnLoadCallback(() => {
+        geoData = google.visualization.arrayToDataTable([
+            ['Country', 'WeatherScore'],
+            ['KR', 50], ['US', 50], ['JP', 50], ['GB', 50], ['DE', 50]
+        ]);
+        geoChart = new google.visualization.GeoChart($('geochart_div'));
+        geoChart.draw(geoData, geoOptions);
+    });
 }
 
-// ── History & IP ──
-let currentIP = 'Unknown';
-let currentCountryCode = 'KR'; // Default
+function updateWeather(grade) {
+    if (!geoChart || !geoData) return;
+    const infoBox = $('localWeatherInfo');
+    const iconEl = $('weatherIcon');
+    const statusText = $('weatherStatusText');
+    const mapCondition = $('map-condition');
+    
+    if (infoBox) infoBox.classList.remove('hidden');
+    let score = 50, label = 'Sunny & Fast', icon = 'wb_sunny', condColor = 'text-emerald-500';
+    
+    if (grade === 'A' || grade === 'B') {
+        score = 100; label = grade === 'A' ? 'Perfect Skies' : 'Sunny & Clear'; icon = 'wb_sunny'; condColor = 'text-emerald-500';
+    } else if (grade === 'C') {
+        score = 50; label = 'Cloudy Connection'; icon = 'cloud'; condColor = 'text-blue-500';
+    } else {
+        score = 0; label = 'Severe Storm Warning'; icon = 'thunderstorm'; condColor = 'text-red-500';
+    }
+    
+    if (iconEl) iconEl.innerHTML = `<span class="material-symbols-outlined text-4xl">${icon}</span>`;
+    if (statusText) statusText.textContent = label;
+    if (mapCondition) { mapCondition.textContent = label; mapCondition.className = 'text-[11px] font-black uppercase ' + condColor; }
 
+    let found = false;
+    for (let i = 0; i < geoData.getNumberOfRows(); i++) {
+        if (geoData.getValue(i, 0) === currentCountryCode) { geoData.setValue(i, 1, score); found = true; break; }
+    }
+    if (!found) geoData.addRow([currentCountryCode, score]);
+    geoChart.draw(geoData, geoOptions);
+}
+
+// ── IP & History ──
 async function getIP() {
   try {
     const res = await fetch('https://api.ipify.org?format=json');
     const data = await res.json();
     currentIP = data.ip;
     $('network-provider').textContent = i18n('js_ip_prefix') + currentIP;
-    
     const infoRes = await fetch('https://ipapi.co/json/');
     const infoData = await infoRes.json();
     if (infoData.org) $('network-name').textContent = infoData.org;
     if (infoData.country) {
         currentCountryCode = infoData.country;
-        // Highlight local country on map if it exists
-        const countryEl = $('country-' + currentCountryCode);
-        if (countryEl) countryEl.classList.add('opacity-100', 'stroke-primary', 'stroke-[2px]');
-        
-        // Update Map Overlay
         if ($('map-loc-name')) $('map-loc-name').textContent = (infoData.city || 'Unknown') + ', ' + currentCountryCode;
     }
   } catch(e) { 
@@ -223,52 +247,6 @@ async function getIP() {
       $('network-provider').textContent = i18n('js_network_connected');
       $('network-name').textContent = i18n('js_analyzing_isp');
   }
-}
-
-function updateWeather(grade) {
-    const countryEl = $('country-' + currentCountryCode) || $('country-KR');
-    const infoBox = $('localWeatherInfo');
-    const iconEl = $('weatherIcon');
-    const statusText = $('weatherStatusText');
-    const mapCondition = $('map-condition');
-    
-    if (!infoBox) return;
-    infoBox.classList.remove('hidden');
-    
-    // Reset classes
-    countryEl.classList.remove('active-sunny', 'active-cloudy', 'active-stormy');
-    
-    let state = 'sunny';
-    let label = 'Sunny & Fast';
-    let icon = 'wb_sunny';
-    let condColor = 'text-emerald-500';
-    
-    if (grade === 'A' || grade === 'B') {
-        state = 'sunny';
-        countryEl.classList.add('active-sunny');
-        label = grade === 'A' ? 'Perfect Skies' : 'Sunny & Clear';
-        icon = 'wb_sunny';
-        condColor = 'text-emerald-500';
-    } else if (grade === 'C') {
-        state = 'cloudy';
-        countryEl.classList.add('active-cloudy');
-        label = 'Cloudy Connection';
-        icon = 'cloud';
-        condColor = 'text-blue-500';
-    } else {
-        state = 'stormy';
-        countryEl.classList.add('active-stormy');
-        label = 'Severe Storm Warning';
-        icon = 'thunderstorm';
-        condColor = 'text-red-500';
-    }
-    
-    iconEl.innerHTML = `<span class="material-symbols-outlined text-4xl">${icon}</span>`;
-    statusText.textContent = label;
-    if (mapCondition) {
-        mapCondition.textContent = label;
-        mapCondition.className = 'text-[11px] font-black uppercase ' + condColor;
-    }
 }
 
 function loadHistory() {
@@ -284,11 +262,8 @@ function loadHistory() {
       <td class="p-8 font-black text-slate-900 dark:text-white text-center">${item.dl} <span class="text-[10px] font-normal text-slate-400 uppercase">Mbps</span></td>
       <td class="p-8 font-black text-slate-900 dark:text-white text-center">${item.ul} <span class="text-[10px] font-normal text-slate-400 uppercase">Mbps</span></td>
       <td class="p-8 font-black text-slate-900 dark:text-white text-center">${item.ping} <span class="text-[10px] font-normal text-slate-400 uppercase">ms</span></td>
-      <td class="p-8 text-right">
-        <span class="px-4 py-2 rounded-full text-[10px] font-black uppercase ${getGradeClass(item.grade)}">${item.grade}</span>
-      </td>
-    </tr>
-  `).join('');
+      <td class="p-8 text-right"><span class="px-4 py-2 rounded-full text-[10px] font-black uppercase ${getGradeClass(item.grade)}">${item.grade}</span></td>
+    </tr>`).join('');
 }
 
 function getGradeClass(grade) {
@@ -305,42 +280,23 @@ function saveHistory(dl, ul, ping, grade) {
   const data = JSON.parse(localStorage.getItem('netScoreHistory') || '[]');
   const now = new Date();
   const dateStr = now.getFullYear() + '.' + (now.getMonth()+1).toString().padStart(2,'0') + '.' + now.getDate().toString().padStart(2,'0');
-  
-  data.unshift({
-    date: dateStr,
-    ip: currentIP,
-    dl: dl ? dl.toFixed(1) : '-',
-    ul: ul ? ul.toFixed(1) : '-',
-    ping: ping ? ping : '-',
-    grade: grade
-  });
+  data.unshift({ date: dateStr, ip: currentIP, dl: dl?dl.toFixed(1):'-', ul: ul?ul.toFixed(1):'-', ping: ping?ping:'-', grade: grade });
   if (data.length > 50) data.pop(); 
   localStorage.setItem('netScoreHistory', JSON.stringify(data));
   loadHistory();
 }
 
-function clearHistory() {
-  if(confirm(i18n('js_confirm_clear'))) {
-    localStorage.removeItem('netScoreHistory');
-    loadHistory();
-  }
-}
+function clearHistory() { if(confirm(i18n('js_confirm_clear'))) { localStorage.removeItem('netScoreHistory'); loadHistory(); } }
 
-// ── UI ──
+// ── UI Control ──
 function setStatus(msg, state) {
   $('statusText').textContent = msg;
   const dot = $('statusDot');
   dot.className = 'w-3 h-3 rounded-full transition-all duration-300 ';
-  
-  if (state === 'running') {
-      dot.classList.add('bg-primary', 'animate-pulse');
-  } else if (state === 'done') {
-      dot.classList.add('bg-emerald-500');
-  } else if (state === 'error') {
-      dot.classList.add('bg-red-500');
-  } else {
-      dot.classList.add('bg-slate-400');
-  }
+  if (state === 'running') dot.classList.add('bg-primary', 'animate-pulse');
+  else if (state === 'done') dot.classList.add('bg-emerald-500');
+  else if (state === 'error') dot.classList.add('bg-red-500');
+  else dot.classList.add('bg-slate-400');
 }
 
 function setProgress(label, pct) {
@@ -348,9 +304,7 @@ function setProgress(label, pct) {
   if (wrap) {
     wrap.classList.remove('hidden');
     $('progressFill').style.width = Math.min(pct, 100) + '%';
-    if (pct >= 100) {
-        setTimeout(() => wrap.classList.add('hidden'), 1000);
-    }
+    if (pct >= 100) setTimeout(() => wrap.classList.add('hidden'), 1000);
   }
 }
 
@@ -358,25 +312,19 @@ function setCard(id, val, state) {
   const card = $('card-' + id);
   const valEl = $('val-' + id);
   if (!card || !valEl) return;
-  
   valEl.textContent = val;
   card.classList.remove('border-primary', 'bg-primary/5', 'scale-105', 'shadow-lg');
-  
-  if (state === 'active') {
-      card.classList.add('border-primary', 'bg-primary/5', 'scale-105', 'shadow-lg');
-  }
+  if (state === 'active') card.classList.add('border-primary', 'bg-primary/5', 'scale-105', 'shadow-lg');
 }
 
 function setGauge(val, max, label) {
   const pct = Math.min((val / max), 1);
-  const fill = $('gaugeFill');
-  fill.style.transform = `scaleY(${pct})`;
-  
+  $('gaugeFill').style.transform = `scaleY(${pct})`;
   $('gaugeVal').textContent = (typeof val === 'number' && val % 1) ? val.toFixed(1) : val;
   $('gaugeLabel').textContent = label;
 }
 
-// ── Effects ──
+// ── Effects & Modal ──
 let animFrame;
 function stopEffect() {
   if (animFrame) cancelAnimationFrame(animFrame);
@@ -386,36 +334,21 @@ function stopEffect() {
 }
 function playConfetti() {
   stopEffect();
-  const cvs = $('effectCanvas');
-  const ctx = cvs.getContext('2d');
+  const cvs = $('effectCanvas'); const ctx = cvs.getContext('2d');
   cvs.width = window.innerWidth; cvs.height = window.innerHeight;
-  const particles = [];
-  const colors = ['#137fec','#ff6b35','#10b981','#f59e0b','#ffffff'];
-  for(let i=0; i<150; i++) {
-    particles.push({
-      x: cvs.width/2, y: cvs.height/2,
-      vx: (Math.random()-0.5)*20, vy: (Math.random()-0.5)*20 - 5,
-      c: colors[Math.floor(Math.random()*colors.length)],
-      s: Math.random()*8+4, r: Math.random()*360, dr: (Math.random()-0.5)*10
-    });
-  }
+  const particles = []; const colors = ['#137fec','#ff6b35','#10b981','#f59e0b','#ffffff'];
+  for(let i=0; i<150; i++) { particles.push({ x: cvs.width/2, y: cvs.height/2, vx: (Math.random()-0.5)*20, vy: (Math.random()-0.5)*20-5, c: colors[Math.floor(Math.random()*colors.length)], s: Math.random()*8+4, r: Math.random()*360, dr: (Math.random()-0.5)*10 }); }
   function loop() {
     ctx.clearRect(0,0,cvs.width,cvs.height);
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy; p.vy += 0.3; p.r += p.dr;
-      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r * Math.PI/180);
-      ctx.fillStyle = p.c; ctx.fillRect(-p.s/2, -p.s/2, p.s, p.s); ctx.restore();
-    });
+    particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.3; p.r += p.dr; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r * Math.PI/180); ctx.fillStyle = p.c; ctx.fillRect(-p.s/2, -p.s/2, p.s, p.s); ctx.restore(); });
     particles.forEach(p => { if(p.y > cvs.height) { p.y = -20; p.x = Math.random()*cvs.width; p.vy = Math.random()*5+2; } });
     animFrame = requestAnimationFrame(loop);
   }
   loop();
 }
-
 function playRain() {
   stopEffect();
-  const cvs = $('effectCanvas');
-  const ctx = cvs.getContext('2d');
+  const cvs = $('effectCanvas'); const ctx = cvs.getContext('2d');
   cvs.width = window.innerWidth; cvs.height = window.innerHeight;
   const drops = [];
   for(let i=0; i<100; i++) { drops.push({ x: Math.random()*cvs.width, y: Math.random()*cvs.height, l: Math.random()*20+10, v: Math.random()*10+15 }); }
@@ -427,191 +360,102 @@ function playRain() {
   }
   loop();
 }
-
 function showModal(grade) {
-  const overlay = $('modalOverlay');
-  overlay.classList.remove('hidden');
+  const overlay = $('modalOverlay'); overlay.classList.remove('hidden');
   setTimeout(() => overlay.classList.remove('opacity-0'), 10);
   $('resultBox').classList.remove('scale-95');
-  if (grade === 'A' || grade === 'B') playConfetti();
-  else if (grade === 'D' || grade === 'F') playRain();
+  if (grade === 'A' || grade === 'B') playConfetti(); else if (grade === 'D' || grade === 'F') playRain();
 }
-
 function closeModal() {
-  const overlay = $('modalOverlay');
-  overlay.classList.add('opacity-0');
+  const overlay = $('modalOverlay'); overlay.classList.add('opacity-0');
   $('resultBox').classList.add('scale-95');
   setTimeout(() => { overlay.classList.add('hidden'); stopEffect(); }, 300);
 }
 
 // ── Measurement Logic ──
-const TARGETS = [
-  'https://www.google.com/generate_204',
-  'https://one.one.one.one/cdn-cgi/trace',
-  'https://www.cloudflare.com/cdn-cgi/trace',
-  'https://httpbin.org/get',
-  'https://www.bing.com/favicon.ico',
-];
-
+const TARGETS = ['https://www.google.com/generate_204','https://one.one.one.one/cdn-cgi/trace','https://www.cloudflare.com/cdn-cgi/trace','https://httpbin.org/get','https://www.bing.com/favicon.ico'];
 async function onePing(url) {
   try {
-    const ac = new AbortController();
-    const t = setTimeout(() => ac.abort(), 4000);
-    const t0 = performance.now();
-    await fetch(url + '?_=' + Date.now(), { mode:'no-cors', cache:'no-store', signal:ac.signal });
-    clearTimeout(t);
-    return Math.round(performance.now() - t0);
+    const ac = new AbortController(); const t = setTimeout(() => ac.abort(), 4000);
+    const t0 = performance.now(); await fetch(url + '?_=' + Date.now(), { mode:'no-cors', cache:'no-store', signal:ac.signal });
+    clearTimeout(t); return Math.round(performance.now() - t0);
   } catch { return null; }
 }
-
 async function runPing() {
-  const N = 15;
-  setStatus(i18n('js_status_ping'), 'running');
-  setCard('ping', '...', 'active');
+  const N = 15; setStatus(i18n('js_status_ping'), 'running'); setCard('ping', '...', 'active');
   const ok = []; let lost = 0;
   for (let i = 0; i < N; i++) {
     const ms = await onePing(TARGETS[i % TARGETS.length]);
-    if (!ms || ms > 3000) { lost++; }
-    else { ok.push(ms); setCard('ping', Math.round(ok.reduce((a,b)=>a+b,0)/ok.length), 'active'); }
-    setProgress('PING', (i+1)/N*30);
-    await sleep(100);
+    if (!ms || ms > 3000) { lost++; } else { ok.push(ms); setCard('ping', Math.round(ok.reduce((a,b)=>a+b,0)/ok.length), 'active'); }
+    setProgress('PING', (i+1)/N*30); await sleep(100);
   }
   setCard('ping', ok.length ? Math.round(ok.reduce((a,b)=>a+b,0)/ok.length) : i18n('js_failed'), '');
   return { ping: ok.length ? Math.round(ok.reduce((a,b)=>a+b,0)/ok.length) : null, jitter: ok.length > 1 ? Math.round(ok.slice(1).reduce((s,v,i)=>s+Math.abs(v-ok[i]),0)/(ok.length-1)) : 0, loss: Math.round(lost/N*100) };
 }
-
 async function dlCF(bytes) {
-  const ac = new AbortController();
-  setTimeout(() => ac.abort(), 15000);
-  const t0 = performance.now();
-  const res = await fetch('https://speed.cloudflare.com/__down?bytes='+bytes+'&t='+Date.now(), { cache:'no-store', signal:ac.signal });
-  const buf = await res.arrayBuffer();
-  return buf.byteLength * 8 / ((performance.now()-t0)/1000) / 1e6;
+  const ac = new AbortController(); setTimeout(() => ac.abort(), 15000);
+  const t0 = performance.now(); const res = await fetch('https://speed.cloudflare.com/__down?bytes='+bytes+'&t='+Date.now(), { cache:'no-store', signal:ac.signal });
+  const buf = await res.arrayBuffer(); return buf.byteLength * 8 / ((performance.now()-t0)/1000) / 1e6;
 }
-
 async function runDownload() {
-  setStatus(i18n('js_status_dl'), 'running');
-  setCard('dl', '...', 'active');
-  const speeds = [];
-  const sizes = [1e6, 5e6, 10e6];
+  setStatus(i18n('js_status_dl'), 'running'); setCard('dl', '...', 'active');
+  const speeds = []; const sizes = [1e6, 5e6, 10e6];
   for (let i = 0; i < sizes.length; i++) {
-    try {
-      const mbps = await dlCF(sizes[i]);
-      if (mbps > 0 && mbps < 10000) { speeds.push(mbps); setGauge(mbps, 200, 'MBPS'); setCard('dl', mbps.toFixed(1), 'active'); }
-    } catch(e) {}
+    try { const mbps = await dlCF(sizes[i]); if (mbps > 0 && mbps < 10000) { speeds.push(mbps); setGauge(mbps, 200, 'MBPS'); setCard('dl', mbps.toFixed(1), 'active'); } } catch(e) {}
     setProgress('DOWNLOAD', 30+(i+1)/3*35);
   }
   setCard('dl', speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(1) : i18n('js_failed'), '');
   return speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(2) : null;
 }
-
 async function runUpload() {
-  setStatus(i18n('js_status_ul'), 'running');
-  setCard('ul', '...', 'active');
-  const speeds = [];
-  const SZ = 1e6;
-  const body = 'a'.repeat(SZ); 
+  setStatus(i18n('js_status_ul'), 'running'); setCard('ul', '...', 'active');
+  const speeds = []; const SZ = 1e6; const body = 'a'.repeat(SZ); 
   for (let i=0;i<3;i++) {
     try {
-      const ac = new AbortController();
-      setTimeout(()=>ac.abort(),15000);
-      const t0 = performance.now();
-      await fetch('https://speed.cloudflare.com/__up?t='+Date.now(), { method:'POST', body: body, mode: 'no-cors', cache:'no-store', signal:ac.signal });
-      const mbps = SZ*8/((performance.now()-t0)/1000)/1e6;
-      if (mbps>0&&mbps<10000) { speeds.push(mbps); setGauge(mbps, 100, 'MBPS'); setCard('ul',mbps.toFixed(1), 'active'); }
+      const ac = new AbortController(); setTimeout(()=>ac.abort(),15000);
+      const t0 = performance.now(); await fetch('https://speed.cloudflare.com/__up?t='+Date.now(), { method:'POST', body: body, mode: 'no-cors', cache:'no-store', signal:ac.signal });
+      const mbps = SZ*8/((performance.now()-t0)/1000)/1e6; if (mbps>0&&mbps<10000) { speeds.push(mbps); setGauge(mbps, 100, 'MBPS'); setCard('ul',mbps.toFixed(1), 'active'); }
     } catch(e) {}
-    setProgress('UPLOAD', 65+(i+1)/3*35);
-    await sleep(200);
+    setProgress('UPLOAD', 65+(i+1)/3*35); await sleep(200);
   }
   setCard('ul', speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(1) : i18n('js_failed'), '');
   return speeds.length ? +speeds[Math.floor(speeds.length/2)].toFixed(2) : null;
 }
 
 function stability(ping, jitter, loss) {
-  let s = 100;
-  if (ping>300) s-=30; else if(ping>150) s-=15; else if(ping>80) s-=5;
+  let s = 100; if (ping>300) s-=30; else if(ping>150) s-=15; else if(ping>80) s-=5;
   if (jitter>50) s-=25; else if(jitter>20) s-=12; else if(jitter>10) s-=5;
-  s -= loss*3;
-  return Math.max(0, Math.min(100, s));
+  s -= loss*3; return Math.max(0, Math.min(100, s));
 }
-
 function grade(dl, ping, stab) {
   let p = 0; const d = dl||0;
   if(d>=100) p+=40; else if(d>=50) p+=32; else if(d>=25) p+=24; else if(d>=10) p+=16; else p+=8;
   if(ping<=20) p+=30; else if(ping<=50) p+=24; else if(ping<=100) p+=18; else if(ping<=200) p+=12; else p+=4;
-  p += stab*0.3;
-  return p>=85?'A':p>=70?'B':p>=50?'C':p>=30?'D':'F';
+  p += stab*0.3; return p>=85?'A':p>=70?'B':p>=50?'C':p>=30?'D':'F';
 }
-
-function getTitle(g) {
-    return i18n('grade_' + g.toLowerCase() + '_title');
-}
-function getDesc(g) {
-    return i18n('grade_' + g.toLowerCase() + '_desc');
-}
-
 function tips(dl, ul, ping, jitter, loss) {
-  const t = [];
-  if (loss>5) t.push(i18n('tip_loss'));
-  if (jitter>30) t.push(i18n('tip_jitter'));
-  if (ping>100) t.push(i18n('tip_ping'));
-  if (dl&&dl<10) t.push(i18n('tip_dl_low'));
-  if (!t.length) t.push(i18n('tip_perfect'));
-  return t;
+  const t = []; if (loss>5) t.push(i18n('tip_loss')); if (jitter>30) t.push(i18n('tip_jitter')); if (ping>100) t.push(i18n('tip_ping')); if (dl&&dl<10) t.push(i18n('tip_dl_low')); if (!t.length) t.push(i18n('tip_perfect')); return t;
 }
 
 let running = false;
 async function startTest() {
-  if (running) return;
-  running = true;
-  $('startBtn').disabled = true;
-  
-  // Reset UI Values
-  ['dl','ul','ping','jitter','loss','stability'].forEach(id => {
-      const el = $('val-' + id);
-      if (el) el.textContent = '...';
-  });
-  $('gaugeFill').style.transform = 'scaleY(0)';
-  $('gaugeVal').textContent = 'READY';
-  $('gaugeLabel').textContent = i18n('js_analyzing');
-  
-  // Measurement Sequence
-  const { ping, jitter, loss } = await runPing();
-  const dl = await runDownload();
-  const ul = await runUpload();
+  if (running) return; running = true; $('startBtn').disabled = true;
+  ['dl','ul','ping','jitter','loss','stability'].forEach(id => { const el = $('val-' + id); if (el) el.textContent = '...'; });
+  $('gaugeFill').style.transform = 'scaleY(0)'; $('gaugeVal').textContent = 'READY'; $('gaugeLabel').textContent = i18n('js_analyzing');
+  const { ping, jitter, loss } = await runPing(); const dl = await runDownload(); const ul = await runUpload();
   const stab = stability(ping||999, jitter, loss);
-  
-  // Final Data Injection
-  $('val-jitter').textContent = jitter;
-  $('val-loss').textContent = loss + '%';
-  $('val-stability').textContent = stab;
-
+  $('val-jitter').textContent = jitter; $('val-loss').textContent = loss + '%'; $('val-stability').textContent = stab;
   const g = grade(dl, ping||999, stab);
-  const resGradeEl = $('resultGrade');
-  resGradeEl.textContent = g;
-  resGradeEl.className = 'text-[10rem] font-black tracking-tighter leading-none ' + 
-    (g === 'A' ? 'text-emerald-500' : g === 'B' ? 'text-blue-500' : 'text-yellow-500');
-  
-  $('resultTitle').textContent = getTitle(g);
-  $('resultDesc').textContent = getDesc(g);
+  const resGradeEl = $('resultGrade'); resGradeEl.textContent = g;
+  resGradeEl.className = 'text-[10rem] font-black tracking-tighter leading-none ' + (g === 'A' ? 'text-emerald-500' : g === 'B' ? 'text-blue-500' : 'text-yellow-500');
+  $('resultTitle').textContent = i18n('grade_' + g.toLowerCase() + '_title');
+  $('resultDesc').textContent = i18n('grade_' + g.toLowerCase() + '_desc');
   $('resultTips').innerHTML = '<ul class="space-y-1">' + tips(dl,ul,ping||999,jitter,loss).map(t=>`<li>${t}</li>`).join('') + '</ul>';
-  
-  // Modal & History
-  showModal(g);
-  saveHistory(dl, ul, ping, g);
-  updateWeather(g); // Update the Global Weather Map
-  
-  setGauge(dl || 0, 200, 'GRADE');
-  $('gaugeVal').textContent = g;
-  setStatus(i18n('js_status_done'), 'done');
-  
-  running = false;
-  $('startBtn').disabled = false;
+  showModal(g); saveHistory(dl, ul, ping, g); updateWeather(g);
+  setGauge(dl || 0, 200, 'GRADE'); $('gaugeVal').textContent = g; setStatus(i18n('js_status_done'), 'done');
+  running = false; $('startBtn').disabled = false;
 }
 
-// Initial Loading
 window.addEventListener('DOMContentLoaded', () => {
-    setLanguage(currentLang);
-    getIP(); 
-    loadHistory();
+    setLanguage(currentLang); getIP(); loadHistory(); initGeoChart();
 });
